@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: Combat Indicator
 ## Author: Glodanif
 ## Version: v1.2

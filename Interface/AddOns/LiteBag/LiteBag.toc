@@ -1,0 +1,27 @@
+## Interface: 80200
+## Title: LiteBag
+## Version: 8.2.0
+## Author: Xodiv of Proudmoore
+## Email: mib@post.com
+## SavedVariablesPerCharacter: LiteBag_OptionsDB
+
+Localization.lua
+
+Print.lua
+Options.lua
+
+BagButton.xml
+ItemButton.xml
+TokenFrame.xml
+Panel.xml
+Frame.xml
+LiteBagBank.xml
+LiteBagInventory.xml
+ReplaceBlizzard.lua
+
+Plugin_BindsOn\BindsOn.xml
+Plugin_EquipSets\EquipSets.xml
+Plugin_IconBorder\IconBorder.xml
+
+UI\UIOptionsPanelTemplate.xml
+UI\UIOptions.xml

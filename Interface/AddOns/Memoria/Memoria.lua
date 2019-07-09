@@ -4,8 +4,10 @@
 -- ********************************************************
 --
 -- This addon is written and copyrighted by:
---    * Mîzukichan @ EU-Antonidas (2010-2018)
+--    * Mîzukichan @ EU-Antonidas (2010-2019)
 --
+-- Contributors:
+--    * Softea_Lethon (Show played time on screenshot, Classic support) (2019) 
 --
 --    This file is part of Memoria.
 --
@@ -36,7 +38,21 @@ Memoria.ADDONNAME = "Memoria"
 Memoria.ADDONVERSION = GetAddOnMetadata(Memoria.ADDONNAME, "Version");
 Memoria.BattlefieldScreenshotAlreadyTaken = false
 Memoria.Debug = nil
+Memoria.WaitForTimePlayed = false
+Memoria.ChatSettings = {}
+Memoria.PlayerLevel = 1
+Memoria.IsRetail = tonumber(string.sub(GetBuildInfo(), 1, 1)) > 1
 local deformat = LibStub("LibDeformat-3.0")
+
+
+------------------------
+--  Addon FSM States  --
+------------------------
+local STATE_IDLE           = 0
+local STATE_SHOT_SCHEDULED = 1
+local STATE_SHOT_DELAY     = 2
+local STATE_SCREENSHOT     = 3
+local STATE_RESTORE_DELAY  = 4
 
 
 -----------------------
@@ -53,6 +69,8 @@ Memoria.DefaultOptions = {
     reputationChange = true,
     reputationChangeOnlyExalted = false,
     levelUp = true,
+    levelUpShowPlayed = false,
+    resizeChat = false,
     challengeDone = false,
     version = 1,
 }
@@ -82,7 +100,12 @@ function Memoria:EventHandler(frame, event, ...)
         Memoria:ENCOUNTER_END_Handler(...)
     
     elseif (event == "PLAYER_LEVEL_UP") then
-        Memoria:PLAYER_LEVEL_UP_Handler()
+        Memoria:PLAYER_LEVEL_UP_Handler(...)
+    
+    elseif (event == "TIME_PLAYED_MSG") then
+        if (Memoria.WaitForTimePlayed) then
+            Memoria:PLAYER_LEVEL_UP_SHOW_PLAYED_Handler(...)
+        end
         
     elseif (event == "UPDATE_BATTLEFIELD_STATUS") then
         Memoria:UPDATE_BATTLEFIELD_STATUS_Handler()
@@ -93,6 +116,7 @@ end
 function Memoria:ADDON_LOADED_Handler(frame)
     Memoria:Initialize(frame)
     Memoria:RegisterEvents(frame)
+    MemoriaFrame:SetScript("OnUpdate", Memoria.OnUpdate)
 end
 
 function Memoria:ACHIEVEMENT_EARNED_Handler()
@@ -132,19 +156,39 @@ function Memoria:ENCOUNTER_END_Handler(...)
     if ((not encounterID) or (not difficulty)) then return; end
     if (success == 1) then 
         -- check if boss was a known kill, if "only after first kill" is enabled
+        if (not Memoria_CharBossKillDB[difficulty]) then Memoria_CharBossKillDB[difficulty] = {}; end
         if (Memoria_Options.bosskillsFirstkill and Memoria_CharBossKillDB[difficulty][encounterID]) then return; end
         Memoria:AddScheduledScreenshot(1)
         Memoria:DebugMsg("Encounter successful - Added screenshot to queue")
-        if (not Memoria_CharBossKillDB[difficulty]) then Memoria_CharBossKillDB[difficulty] = {}; end
         Memoria_CharBossKillDB[difficulty][encounterID] = true
     end
 end
 
-function Memoria:PLAYER_LEVEL_UP_Handler()
+function Memoria:PLAYER_LEVEL_UP_Handler(level, ...)
     Memoria:DebugMsg("PLAYER_LEVEL_UP_Handler() called...")
+    Memoria.PlayerLevel = level
+    if not Memoria_CharLevelTimes[Memoria.PlayerLevel] then
+        Memoria_CharLevelTimes[Memoria.PlayerLevel] = 0
+    end
     if (not Memoria_Options.levelUp) then return; end
+    if (Memoria_Options.levelUpShowPlayed) then
+        Memoria.WaitForTimePlayed = true
+        RequestTimePlayed()
+        return
+    end
     Memoria:AddScheduledScreenshot(1)
     Memoria:DebugMsg("Level up - Added screenshot to queue")
+end
+
+function Memoria:PLAYER_LEVEL_UP_SHOW_PLAYED_Handler(...)
+    Memoria:DebugMsg("PLAYER_LEVEL_UP_SHOW_PLAYED_Handler() called...")
+    if (not Memoria_Options.levelUp) then return; end
+    if (not Memoria_Options.levelUpShowPlayed) then return; end
+    if (not Memoria.WaitForTimePlayed) then return; end
+    Memoria.WaitForTimePlayed = false
+    Memoria:ShowPrevious()
+    Memoria:AddScheduledScreenshot(0)
+    Memoria:DebugMsg("Level up show played - Added screenshot to queue")
 end
 
 function Memoria:UPDATE_BATTLEFIELD_STATUS_Handler()
@@ -160,8 +204,7 @@ function Memoria:UPDATE_BATTLEFIELD_STATUS_Handler()
     -- if screenshot of this battlefield already taken, then return
     if (Memoria.BattlefieldScreenshotAlreadyTaken) then return; end
     -- if we are here, we have a freshly finished arena or battleground
-    local isArena = IsActiveBattlefieldArena()
-    if (isArena) then
+    if (Memoria.IsRetail and IsActiveBattlefieldArena()) then
         if (not Memoria_Options.arenaEnding) then return; end
         if (not Memoria_Options.arenaEndingOnlyWins) then
             Memoria:AddScheduledScreenshot(1)
@@ -192,6 +235,11 @@ function Memoria:UPDATE_BATTLEFIELD_STATUS_Handler()
     end
 end
 
+function Memoria:OnUpdate(elapsed)
+    Memoria_CharLevelTimes[Memoria.PlayerLevel] = Memoria_CharLevelTimes[Memoria.PlayerLevel] + elapsed
+    Memoria:ScreenshotHandler(elapsed)
+end
+
 
 ----------------------------------------------
 --  Update saved data and initialize addon  --
@@ -206,8 +254,16 @@ function Memoria:Initialize(frame)
     if (not Memoria_CharBossKillDB) then
         Memoria_CharBossKillDB = {}
     end
+    if (not Memoria_CharLevelTimes) then
+        Memoria_CharLevelTimes = {}
+    end
+    Memoria.PlayerLevel = UnitLevel("PLAYER")
+    if not Memoria_CharLevelTimes[Memoria.PlayerLevel] then
+        Memoria_CharLevelTimes[Memoria.PlayerLevel] = 0
+    end
+    Memoria.queue = {}
+    Memoria.state = STATE_IDLE
     Memoria:OptionsInitialize()
-    Memoria:RegisterEvents(frame)
 end
 
 
@@ -216,11 +272,14 @@ end
 -------------------------------------------------
 function Memoria:RegisterEvents(frame)
     frame:UnregisterAllEvents()
-    if (Memoria_Options.achievements) then frame:RegisterEvent("ACHIEVEMENT_EARNED"); end
-    if (Memoria_Options.challengeDone) then frame:RegisterEvent("CHALLENGE_MODE_COMPLETED"); end
+    if Memoria.IsRetail then
+        if (Memoria_Options.achievements) then frame:RegisterEvent("ACHIEVEMENT_EARNED"); end
+        if (Memoria_Options.challengeDone) then frame:RegisterEvent("CHALLENGE_MODE_COMPLETED"); end
+    end
     if (Memoria_Options.reputationChange) then frame:RegisterEvent("CHAT_MSG_SYSTEM"); end
     if (Memoria_Options.bosskills) then frame:RegisterEvent("ENCOUNTER_END"); end
     if (Memoria_Options.levelUp) then frame:RegisterEvent("PLAYER_LEVEL_UP"); end
+    if (Memoria_Options.levelUpShowPlayed) then frame:RegisterEvent("TIME_PLAYED_MSG"); end
     if (Memoria_Options.arenaEnding or Memoria_Options.battlegroundEnding) then frame:RegisterEvent("UPDATE_BATTLEFIELD_STATUS"); end
 end
 
@@ -229,48 +288,67 @@ end
 --  Create Frame for Events and ScreenshotScheduling  --
 --------------------------------------------------------
 MemoriaFrame = CreateFrame("Frame", "MemoriaFrame", UIParent, nil)
-MemoriaFrame:SetScript("OnEvent", function(self, event, ...) Memoria:EventHandler(self, event, ...); end)
+MemoriaFrame:SetScript("OnEvent", function (...) Memoria:EventHandler(...) end)
 MemoriaFrame:RegisterEvent("ADDON_LOADED")
-MemoriaFrame.queue = {}
 
 
 -----------------------------------------
 --  Functions for screenshot handling  --
 -----------------------------------------
-function Memoria:ScreenshotHandler(frame)
-    if ( (time() - frame.lastCheck) == 0 ) then return; end
-    local rmList = {}
-    local now = time()
-    local lastCheckInSecs = now - frame.lastCheck
-    for i, delay in ipairs(frame.queue) do
-        if (delay > 0) then
-            frame.queue[i] = delay - lastCheckInSecs
-        else
-            if (now ~= frame.lastScreenshot) then
-                Screenshot()
+function Memoria:ScreenshotHandler(elapsed)
+    if Memoria.state == STATE_IDLE then
+        return
+    elseif Memoria.state == STATE_SHOT_SCHEDULED then
+        local rmList = {}
+        for i, delay in ipairs(Memoria.queue) do
+            if (delay > 0) then
+                Memoria.queue[i] = delay - elapsed
+            else
+                tinsert(rmList, i, 1)
+                if Memoria_Options.levelUpShowPlayed and Memoria_Options.resizeChat then
+                    Memoria.state = STATE_SHOT_DELAY
+                else
+                    Memoria.state = STATE_SCREENSHOT
+                end
             end
-            frame.lastScreenshot = now
-            tinsert(rmList, i, 1)
+        end
+        for i, index in ipairs(rmList) do
+            tremove(Memoria.queue, index)
+        end
+    elseif Memoria.state == STATE_SHOT_DELAY then
+        -- Ensure chat window is big enough, need 1 frame setup before screenshot
+        -- No matter resolution or UI scale, max size is 608x400
+        DEFAULT_CHAT_FRAME:SetHeight(608)
+        DEFAULT_CHAT_FRAME:SetWidth(400)
+        Memoria.state = STATE_SCREENSHOT
+    elseif Memoria.state == STATE_SCREENSHOT then
+        Screenshot()
+        if Memoria_Options.levelUpShowPlayed and Memoria_Options.resizeChat then
+            -- Wait a frame to reset the chat, screenshot happens after frame ends
+            Memoria.state = STATE_RESTORE_DELAY
+        else
+            if (#Memoria.queue == 0) then
+                Memoria.state = STATE_IDLE
+            else
+                Memoria.state = STATE_SHOT_SCHEDULED
+            end
+        end
+    elseif Memoria.state == STATE_RESTORE_DELAY then
+        DEFAULT_CHAT_FRAME:SetHeight(Memoria.ChatSettings["height"])
+        DEFAULT_CHAT_FRAME:SetWidth(Memoria.ChatSettings["width"])
+        if (#Memoria.queue == 0) then
+            Memoria.state = STATE_IDLE
+        else
+            Memoria.state = STATE_SHOT_SCHEDULED
         end
     end
-    for i, index in ipairs(rmList) do
-        tremove(frame.queue, index)
-    end
-    if (#frame.queue == 0) then
-        frame:SetScript("OnUpdate", nil)
-        frame.running = false
-    end
-    frame.lastCheck = now
 end
 
 function Memoria:AddScheduledScreenshot(delay)
-    tinsert(MemoriaFrame.queue, delay);
-    if (not MemoriaFrame.running) then
-        MemoriaFrame.lastCheck = time()
-        MemoriaFrame.lastScreenshot = time()
-        MemoriaFrame.running = true
-        MemoriaFrame:SetScript("OnUpdate", function(self) Memoria:ScreenshotHandler(self); end)
-    end
+    tinsert(Memoria.queue, delay);
+    Memoria.state = STATE_SHOT_SCHEDULED
+    Memoria.ChatSettings["height"] = DEFAULT_CHAT_FRAME:GetHeight()
+    Memoria.ChatSettings["width"] = DEFAULT_CHAT_FRAME:GetWidth()
 end
 
 
@@ -292,4 +370,29 @@ function Memoria:DebugMsg(text)
     if (Memoria.Debug) then
         DEFAULT_CHAT_FRAME:AddMessage("Memoria v."..Memoria.ADDONVERSION.." Debug: "..text, 1, 0.5, 0);
     end
+end
+
+function Memoria:ShowPrevious()
+    local timePlayedPreviousLevel = Memoria_CharLevelTimes[Memoria.PlayerLevel - 1]
+    if timePlayedPreviousLevel then
+        local days, remainder  = Memoria:DivMod(timePlayedPreviousLevel, 86400)
+        local hours, remainder = Memoria:DivMod(remainder, 3600)
+        local minutes, seconds = Memoria:DivMod(remainder, 60)
+        local systemSettings = ChatTypeInfo["SYSTEM"]
+        -- \124c Color Sequence Introducer then ARGB
+        -- \124r Reset
+        local red = bit.lshift(systemSettings.r * 255, 16)
+        local green = bit.lshift(systemSettings.g * 255, 8)
+        local color = bit.bor(red, green)
+        color = bit.bor(color, systemSettings.b * 255)
+        color = string.format("%x", color)
+        DEFAULT_CHAT_FRAME:AddMessage("\124cFF"..color..Memoria.L["time played"].." "..(Memoria.PlayerLevel - 1)..": "..days.." "..Memoria.L["days"]..", "..hours.." "..Memoria.L["hours"]..", "..minutes.." "..Memoria.L["minutes"]..", "..seconds.." "..Memoria.L["seconds"])
+    end
+end
+
+function Memoria:DivMod(a, b)
+    if (b == 0) then return 0, 0 end
+    local div = math.floor(a / b)
+    local mod = math.floor(math.fmod(a, b))
+    return div, mod
 end

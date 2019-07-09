@@ -1,0 +1,19 @@
+tag 54f3658a9449c1db8fe181c43776fe9d9617e908 8.2.2
+Author:	Mike "Xodiv" Battersby <mib@post.com>
+Date:	Wed Jun 26 22:39:36 2019 +1000
+
+LiteMount 8.2.2
+Fix a problem where swimming mounts would sometimes summon on land
+
+commit 65688bcc5293923e5aae865cfd1bcfce55a52494
+Author: Mike "Xodiv" Battersby <mib@post.com>
+Date:   Wed Jun 26 22:39:19 2019 +1000
+
+    Better swimming check
+
+commit 8277c4a7549c0ffea9cc3d5a54eaf92bab9ac544
+Author: Mike "Xodiv" Battersby <mib@post.com>
+Date:   Wed Jun 26 21:37:06 2019 +1000
+
+    Fixups to SmartMount swimming check
+

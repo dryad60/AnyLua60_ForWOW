@@ -31,11 +31,11 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(GameTooltip)
 		if UnitFactionGroup("player") == "Horde" then
 			if GameTooltipTextLeft3:GetText() == "Horde" then
 				GameTooltipTextLeft3:SetTextColor(255, 0.1, 0)
-			elseif GameTooltipTextLeft4:GetText() == "Horde"then
+			elseif GameTooltipTextLeft4 ~= nil and GameTooltipTextLeft4:GetText() == "Horde"then
 				GameTooltipTextLeft4:SetTextColor(255, 0.1, 0)
-			elseif GameTooltipTextLeft3:GetText() == "Alliance"then
+			elseif GameTooltipTextLeft4 ~= nil and GameTooltipTextLeft3:GetText() == "Alliance"then
 				GameTooltipTextLeft3:SetTextColor(0, 0.5, 255)
-			elseif GameTooltipTextLeft4:GetText() == "Alliance"then
+			elseif GameTooltipTextLeft4 ~= nil and GameTooltipTextLeft4:GetText() == "Alliance"then
 				GameTooltipTextLeft4:SetTextColor(0, 0.5, 255)
 			else
 				GameTooltipTextLeft3:SetTextColor(255, 255, 255)
@@ -46,11 +46,11 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(GameTooltip)
 	if UnitFactionGroup("player") == "Alliance" then
 		if GameTooltipTextLeft3:GetText() == "Alliance" then
 			GameTooltipTextLeft3:SetTextColor(0, 0.5, 255)
-		elseif GameTooltipTextLeft4:GetText() == "Alliance"then
+		elseif GameTooltipTextLeft4 ~= nil and GameTooltipTextLeft4:GetText() == "Alliance"then
 			GameTooltipTextLeft4:SetTextColor(0, 0.5, 255)
-		elseif GameTooltipTextLeft3:GetText() == "Horde"then
+		elseif GameTooltipTextLeft4 ~= nil and GameTooltipTextLeft3:GetText() == "Horde"then
 			GameTooltipTextLeft3:SetTextColor(255, 0.1, 0)
-		elseif GameTooltipTextLeft4:GetText() == "Horde"then
+		elseif GameTooltipTextLeft4 ~= nil and GameTooltipTextLeft4:GetText() == "Horde"then
 			GameTooltipTextLeft4:SetTextColor(255, 0.1, 0)
 		else
 			GameTooltipTextLeft3:SetTextColor(255, 255, 255)

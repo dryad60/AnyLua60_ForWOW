@@ -7,8 +7,6 @@
 <Include file="Libs\NoTaint_UIDropDownMenu\UIDropDownMenuTemplates.xml"/>
 <Script file="Libs\NoTaint_UIDropDownMenu\UIDropDownMenu.lua"/>
 <Script file="Libs\NoTaint_UIDropDownMenu\EasyMenu.lua"/>
-<Script file="Libs\oUF_Smooth\oUF_Smooth.lua"/>
-<Script file="Libs\oUF_FloatingCombatFeedback\oUF_FloatingCombatFeedback.lua"/>
 <Include file="Libs\AceGUI-3.0\AceGUI-3.0.xml"/>
 <Include file="Libs\AceConfigRegistry-3.0\AceConfigRegistry-3.0.xml"/>
 <Include file="Libs\AceConfigDialog-3.0\AceConfigDialog-3.0.xml"/>

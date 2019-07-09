@@ -1,0 +1,18 @@
+tag 86545f670a209391acd353c7a4b682ad769235f4 8.2.0
+Author:	Mike "Xodiv" Battersby <mib@post.com>
+Date:	Wed Jun 26 17:37:07 2019 +1000
+
+Tagging 8.2.0 for release
+
+commit 467653f75d3014c6762bd7fc6e73845da88b7808
+Author: Mike "Xodiv" Battersby <mib@post.com>
+Date:   Wed Jun 26 17:36:39 2019 +1000
+
+    Update ToC for WoW 8.2
+
+commit e479431323988a7632e0c86ae3fb5bec54d54a77
+Author: Mike "Xodiv" Battersby <mib@post.com>
+Date:   Thu Jun 6 08:55:26 2019 +1000
+
+    A hack to resize frame when changing bags.
+

@@ -1,129 +1,39 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: AnyLua<->60 
 ## Author: dryad60 
 ## Version: 8.0.0 
 ## Notes-zhCN: Lua包<->60 
 
-##这3行来自iipUI
-## Dependencies: oUF
-## OptionalDeps: Clique
-## SavedVariables: iipRaidLayout, iipRaidX, iipRaidY, IIP_VAR
 
 ## 暂时不用，用ImmersiveFade代替了
 ## code.lua
-## 载入一些需要的底层库
+## 载入一些需要的底层lib
 embeded_libs.xml
 
 HideSystemMenu.lua
 RightActionbar.lua
 ObjectiveTracker.lua
 ActionbarRange.lua
+##给物品和法术的Tooltip添加一个图标,从Tipachu这个插件里直接COPY的
+Tipachu.lua
+##添加装等和天赋，来自CloudyUnitInfo这个插件COPY
+CloudyUnitInfo.lua
+##聊天输入框最上面
+EditboxTop.lua
 
 ## 来自AbyssUI的, 默认界面的一些修改, 黑色主题
-AbyssUI\darkskin.lua
+## AbyssUI\darkskin.lua
 AbyssUI\castbar.lua
 AbyssUI\sellNrepair.lua
 AbyssUI\tooltip.lua
-#给物品和法术的Tooltip添加一个图标,从Tipachu这个插件里直接COPY的
-Tipachu.lua
-#添加装等和天赋，来自CloudyUnitInfo这个插件COPY
-CloudyUnitInfo.lua
+## AbyssUI\chat.lua
+## AbyssUI\default_unitframe.lua
 
 
-
-
-## 来自iipUI的
-
-#  ~insert templates
-iipUI\core\typeface\templates.xml
-iipUI\core\typeface\text.lua
-iipUI\core\colour\class.lua
-iipUI\core\colour\reaction.lua
-iipUI\core\api\events.lua
-iipUI\core\api\skins.lua
-iipUI\core\api\style.lua
-iipUI\core\api\values.lua
-iipUI\core\api\utf8.lua
-iipUI\core\delegate\position.lua
-iipUI\core\vars\svar.lua
-#  ~mid-load custom behaviour
-iipUI\customise\customise.lua
-##使用的模块
-##BUFF/DEBUFF
-iipUI\elements\aura\aura.lua
-##失控提醒
-iipUI\elements\loss_of_control\lossofcontrol.lua
-##任务栏移动
-iipUI\elements\objectives\objectives.lua
-##背包
-iipUI\elements\bag\bag\bag.lua
-iipUI\elements\bag\button.lua
-iipUI\elements\bag\bank\bank.lua
-iipUI\elements\bag\tools\greys.lua
-iipUI\elements\bag\tools\tradeskills.lua
-iipUI\elements\bag\update.lua
-##
-iipUI\elements\talking_head\talkinghead.lua
-
-
-
-#没有使用的
-#
-##iipUI\elements\nameplates\nameplates.lua
-##iipUI\elements\nameplates\resource.lua
-#
-##elements\groupframe\auras\spelllist.lua
-##elements\groupframe\auras\auras.lua
-##elements\groupframe\info\info.lua
-##elements\groupframe\tags.lua
-##elements\groupframe\update.lua
-##elements\groupframe\sizing.lua
-##elements\groupframe\shared\layout.lua
-##elements\groupframe\party\layout.lua
-##elements\groupframe\tanks\layout.lua
-##elements\groupframe\healers\layout.lua
-##elements\groupframe\dps\layout.lua
-##elements\groupframe\generate.lua
-#
-##elements\unitframe\auras.lua
-##elements\unitframe\tags.lua
-##elements\unitframe\update.lua
-##elements\unitframe\shared\layout.lua
-##elements\unitframe\player\layout.lua
-##elements\unitframe\target\layout.lua
-##elements\unitframe\pet\layout.lua
-##elements\unitframe\tot\layout.lua
-##elements\unitframe\boss\layout.lua
-##elements\unitframe\arena\layout.lua
-##elements\unitframe\focus\layout.lua
-##elements\unitframe\generate.lua
-#
-##elements\tooltip\content.lua
-##elements\tooltip\layout.lua
-#
-##elements\bar\bar.lua
-##elements\bar\clock.lua
-##elements\bar\hotkey.lua
-##elements\bar\buttons.lua
-##elements\bar\stance.lua
-##elements\bar\pet.lua
-##elements\bar\petbattle.lua
-##elements\bar\hide.lua
-##elements\bar\bindings.lua
-##elements\bar\extra.lua
-##elements\bar\vehicleleave.lua
-##elements\bar\zone.lua
-#
-##elements\boss\warnings.lua
-#
-##elements\minimap\cluster.lua
-##elements\minimap\difficulty.lua
-##elements\minimap\icons.lua
-##elements\minimap\minimap.lua
-
-#
-##elements\chat\chat.lua
-##elements\chat\cmd.lua
-##elements\chat\event.lua
-##elements\chat\tab.lua
-##elements\chat\url.lua
+##A4U,NGA
+A4U\ChatFrame.lua
+A4U\PrettifyMinimap.lua
+A4U\CooldownCount.lua
+A4U\PrettifyBuff.lua
+A4U\PrettifyUnitframe.lua
+A4U\PrettifyUnitframeAura.lua

@@ -1,0 +1,12 @@
+lightweight tag 169e3df41ebf3918d7775a69392f6db2947a385f 6.23.4
+Author:	Luxocracy <luxor355@gmail.com>
+Date:	Mon Jul 8 12:40:10 2019 +0200
+
+commit 169e3df41ebf3918d7775a69392f6db2947a385f
+Author: Luxocracy <luxor355@gmail.com>
+Date:   Mon Jul 8 12:40:10 2019 +0200
+
+    Added support for the Bodyguard XP bar in Nazjatar
+    
+    - Added support for the Bodyguard XP bar in Nazjatar. (Currently there is no option for toggling this on or off. If that is something that you want, be sure to leave a comment or open an issue over on Github)
+

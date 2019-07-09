@@ -1,72 +1,10 @@
-commit 8a107c109a6220133f790c1cd15d7c3a0bc52fd2
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Mon Jul 30 19:27:09 2018 -0500
+tag eaed4cc5aaa223331e80549aa6a4a6311e80a1fb 1.0.1
+Author:	Lily Montoute <1100891+lmontoute@users.noreply.github.com>
+Date:	Tue Aug 21 18:34:50 2018 -0500
 
-    Prepare for initial release
+commit 2bec5ac9432602766f521a0576a7a60312fd5265
+Author: Lily Montoute <1100891+lmontoute@users.noreply.github.com>
+Date:   Tue Aug 21 18:34:33 2018 -0500
 
-commit 195e1b4112b0b1aa69bb138fcc2a8f3d21981178
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Mon Jul 30 18:55:35 2018 -0500
-
-    Add README
-
-commit 16d6df51a2168d0b84b8f528ff47ae348062db3f
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Sun Jul 29 21:40:16 2018 -0500
-
-    Add LFG and PVP frames to whitelist
-
-commit 9fd3cce93bf1d6bef2a9956f434e896c3cb8db07
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Sun Jul 29 21:26:26 2018 -0500
-
-    Fix scaling when re-parenting frames from UIParent
-
-commit 0bdb9cb0426f1e9f35bcd2c4d629429d1248bdf5
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Sun Jul 29 20:44:14 2018 -0500
-
-    Fix typo with LFGDungeonReadyPopup
-
-commit 9e2bdd8d97cc57224e26b6a0b4a9b57176ce11bd
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Sun Jul 29 20:41:32 2018 -0500
-
-    Fix exclude/include
-
-commit e56c3baab055ed32e5d6323ad40d5aa5b6ba0069
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Sun Jul 29 19:23:24 2018 -0500
-
-    Fix excluded frames
-
-commit 3487c973258ad6b7db91134f40c548ca3c90cacc
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Sat Jul 28 19:50:58 2018 -0500
-
-    Add libraries, in-game configuration
-
-commit 05f80326a57384c2eb3d70569882f6d521ab2244
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Wed Jul 25 20:46:42 2018 -0500
-
-    Add .gitignore
-
-commit dff6a744abfc0bd1c347efc0a1d0e16e19926e41
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Wed Jul 25 20:46:37 2018 -0500
-
-    Exclusion mechanism, better chat frame edit box detection
-
-commit 929dfdaa52a841618024e6fd4d6e27a2ffe68128
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Wed Jul 25 20:44:43 2018 -0500
-
-    Add exclusion mechanism (MinimapCluster by default)
-
-commit 8c7758caad5652a3d506ce07e2ec91b1f7e3c3ed
-Author: Lily Montoute <lily@thinksquirrel.com>
-Date:   Sun Jul 22 16:35:50 2018 -0500
-
-    Initial commit
+    1.0.1
 
