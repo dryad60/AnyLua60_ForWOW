@@ -10,8 +10,7 @@
 ## 载入一些需要的底层lib
 embeded_libs.xml
 
-HideSystemMenu.lua
-RightActionbar.lua
+AdjustActionbar.lua
 ObjectiveTracker.lua
 ActionbarRange.lua
 ##给物品和法术的Tooltip添加一个图标,从Tipachu这个插件里直接COPY的
@@ -20,6 +19,10 @@ Tipachu.lua
 CloudyUnitInfo.lua
 ##聊天输入框最上面
 EditboxTop.lua
+##QS惩戒圣能
+SimpleHolyPower.lua
+##DZ星星
+SimpleComboPoint.lua
 
 ## 来自AbyssUI的, 默认界面的一些修改, 黑色主题
 ## AbyssUI\darkskin.lua
@@ -33,7 +36,7 @@ AbyssUI\tooltip.lua
 ##A4U,NGA
 A4U\ChatFrame.lua
 A4U\PrettifyMinimap.lua
-A4U\CooldownCount.lua
+##A4U\CooldownCount.lua
 A4U\PrettifyBuff.lua
-A4U\PrettifyUnitframe.lua
-A4U\PrettifyUnitframeAura.lua
+##A4U\PrettifyUnitframe.lua
+##A4U\PrettifyUnitframeAura.lua

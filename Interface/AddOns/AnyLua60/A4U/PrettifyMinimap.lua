@@ -42,6 +42,7 @@ Minimap:SetScale(1)
 Minimap:SetFrameStrata("LOW")
 Minimap:ClearAllPoints()
 Minimap:SetPoint("TOPRIGHT"	, UIParent, -6, -22)
+--Minimap:SetPoint("BOTTOMLEFT", MainMenuBarArtFrame.LeftEndCap, -100, 150)
 
 
 -- Zone text

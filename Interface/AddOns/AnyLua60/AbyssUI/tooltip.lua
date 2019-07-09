@@ -39,7 +39,9 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(GameTooltip)
 				GameTooltipTextLeft4:SetTextColor(0, 0.5, 255)
 			else
 				GameTooltipTextLeft3:SetTextColor(255, 255, 255)
-				GameTooltipTextLeft4:SetTextColor(255, 255, 255)
+				if GameTooltipTextLeft4 ~= nil then				
+					GameTooltipTextLeft4:SetTextColor(255, 255, 255)
+				end
 			end
 		end
   -- Alliance
@@ -54,7 +56,9 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(GameTooltip)
 			GameTooltipTextLeft4:SetTextColor(255, 0.1, 0)
 		else
 			GameTooltipTextLeft3:SetTextColor(255, 255, 255)
-			GameTooltipTextLeft4:SetTextColor(255, 255, 255)
+				if GameTooltipTextLeft4 ~= nil then				
+					GameTooltipTextLeft4:SetTextColor(255, 255, 255)
+				end
 		end
 	end
 end)
