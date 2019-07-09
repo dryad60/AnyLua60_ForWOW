@@ -12,5 +12,6 @@
 *.ncb
 *.aps
 *.bak
+*.lua_bak
 .vs/
-
+.WTF/
