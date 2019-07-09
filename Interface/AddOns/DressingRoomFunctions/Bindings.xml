@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="OPENDRESSINGROOM" header="DRF" category="ADDONS" default="F6">
+		OpenDressingRoom();
+	</Binding>
+</Bindings>

@@ -1,4 +1,4 @@
-﻿local cfg = oUF_Hank_config
+local cfg = oUF_Hank_config
 
 -- Shorten health and power numbers
 local function valShort(value)
@@ -10,6 +10,8 @@ local function valShort(value)
 		return ("%.2f"):format(value / 1e6):gsub("%.?0+$", "") .. "m"
 	elseif(value >= 1e4) then -- 132.1k
 		return ("%.1f"):format(value / 1e3):gsub("%.?0+$", "") .. "k"
+	elseif(value >= 1e3) then -- 1~9k
+		return ("%.1f"):format(value / 1e3):gsub("%.?+$", "") .. "k"
 	else
 		return value
 	end

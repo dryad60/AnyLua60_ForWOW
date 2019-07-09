@@ -1,0 +1,14 @@
+## Interface: 80000
+## Title: |cFFDDCF99Obelisk|r Minimap
+## Author: Malakahh
+## Notes: A clean minimap featuring coordinates, latency and framerate, and masking. It also collects and stores minimap buttons
+## Version: r9
+
+## SavedVariables: OMM
+
+libs\ObeliskFramework\ObeliskInclude.xml
+options.lua
+minimap.lua
+buttonCollector.lua
+zoneText.lua
+informationFrame.lua

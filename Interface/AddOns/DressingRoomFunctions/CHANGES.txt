@@ -1,0 +1,17 @@
+lightweight tag ed76b601f09e4dad811fcfdd5077eab9db59b167 v1.5.0
+Author:	Rachael Alexanderson <raa-eruanna@users.noreply.github.com>
+Date:	Mon May 28 22:13:48 2018 -0400
+
+commit ed76b601f09e4dad811fcfdd5077eab9db59b167
+Author: Rachael Alexanderson <raa-eruanna@users.noreply.github.com>
+Date:   Mon May 28 22:09:45 2018 -0400
+
+    - relicense as BSD (was GPLv3 previously) - BSD is more permissive and allows greater freedom in the use and distribution of the addon
+
+commit ee868c5dd6702220b4b0133577e0c2aaed4ce195
+Author: Rachael Alexanderson <raa-eruanna@users.noreply.github.com>
+Date:   Mon May 28 21:53:40 2018 -0400
+
+    - add .gitattributes to manage text files and properly manage git line endings
+    - add support for the two current actual beta WoW races for BFA
+

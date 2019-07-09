@@ -10,8 +10,8 @@
 ## X-WoWIPortal: hankthetank
 
 config.default.lua
-config.lua
+##config.lua
 tags.lua
 custom_modifications.default.lua
-custom_modifications.lua
+##custom_modifications.lua
 hank.lua

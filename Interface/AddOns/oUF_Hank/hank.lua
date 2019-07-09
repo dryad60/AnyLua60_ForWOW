@@ -80,6 +80,11 @@ fntSmall:SetFont(unpack(cfg.FontStyleSmall))
 fntSmall:SetTextColor(unpack(cfg.colors.text))
 fntSmall:SetShadowColor(unpack(cfg.colors.textShadow))
 fntSmall:SetShadowOffset(1, -1)
+local fntDuration = CreateFont("UFFontDuration")
+fntDuration:SetFont(unpack(cfg.FontStyleSmall)) --cfg.CastBarBig
+fntDuration:SetTextColor(unpack(cfg.colors.default_text))
+fntDuration:SetShadowColor(unpack(cfg.colors.textShadow))
+fntDuration:SetShadowOffset(1, -1)
 
 local canDispel = {}
 
@@ -313,32 +318,56 @@ oUF_Hank.PostUpdateIcon = function(icons, unit, icon, index, offset)
 	-- We want the border, not the color for the type indication
 	icon.overlay:SetVertexColor(1, 1, 1)
 
-	local _, _, _, _, dtype, _, _, caster, _, _, _ = UnitAura(unit, index, icon.filter)
+	--local _, _, _, _, dtype, _, _, caster, _, _, _ = UnitAura(unit, index, icon.filter)
+	local name, texture, count, dtype, duration, expiration, caster, isStealable,
+		nameplateShowSelf, spellID, canApply, isBossDebuff, casterIsPlayer, nameplateShowAll,
+		timeMod, effect1, effect2, effect3 = UnitAura(unit, index, icon.filter)
 	if caster == "vehicle" then caster = "player" end
 
-	if icon.filter == "HELPFUL" and not UnitCanAttack("player", unit) and caster == "player" and cfg["Auras" .. upper(unit)].StickyAuras.myBuffs then
-		-- Sticky aura: myBuffs
-		icon.icon:SetVertexColor(unpack(cfg.AuraStickyColor))
-		icon.icon:SetDesaturated(false)
-	elseif icon.filter == "HARMFUL" and UnitCanAttack("player", unit) and caster == "player" and cfg["Auras" .. upper(unit)].StickyAuras.myDebuffs then
-		-- Sticky aura: myDebuffs
-		icon.icon:SetVertexColor(unpack(cfg.AuraStickyColor))
-		icon.icon:SetDesaturated(false)
-	elseif icon.filter == "HARMFUL" and UnitCanAttack("player", unit) and caster == "pet" and cfg["Auras" .. upper(unit)].StickyAuras.petDebuffs then
-		-- Sticky aura: petDebuffs
-		icon.icon:SetVertexColor(unpack(cfg.AuraStickyColor))
-		icon.icon:SetDesaturated(false)
-	elseif icon.filter == "HARMFUL" and not UnitCanAttack("player", unit) and canDispel[({UnitClass("player")})[2]][dtype] and cfg["Auras" .. upper(unit)].StickyAuras.curableDebuffs then
-		-- Sticky aura: curableDebuffs
-		icon.icon:SetVertexColor(DebuffTypeColor[dtype].r, DebuffTypeColor[dtype].g, DebuffTypeColor[dtype].b)
-		icon.icon:SetDesaturated(false)
-	elseif icon.filter == "HELPFUL" and UnitCanAttack("player", unit) and UnitIsUnit(unit, caster or "") and cfg["Auras" .. upper(unit)].StickyAuras.enemySelfBuffs then
-		-- Sticky aura: enemySelfBuffs
-		icon.icon:SetVertexColor(unpack(cfg.AuraStickyColor))
-		icon.icon:SetDesaturated(false)
+--	if icon.filter == "HELPFUL" and not UnitCanAttack("player", unit) and caster == "player" and cfg["Auras" .. upper(unit)].StickyAuras.myBuffs then
+--		-- Sticky aura: myBuffs
+--		icon.icon:SetVertexColor(unpack(cfg.AuraStickyColor))
+--		icon.icon:SetDesaturated(false)
+--	elseif icon.filter == "HARMFUL" and UnitCanAttack("player", unit) and caster == "player" and cfg["Auras" .. upper(unit)].StickyAuras.myDebuffs then
+--		-- Sticky aura: myDebuffs
+--		icon.icon:SetVertexColor(unpack(cfg.AuraStickyColor))
+--		icon.icon:SetDesaturated(false)
+--	elseif icon.filter == "HARMFUL" and UnitCanAttack("player", unit) and caster == "pet" and cfg["Auras" .. upper(unit)].StickyAuras.petDebuffs then
+--		-- Sticky aura: petDebuffs
+--		icon.icon:SetVertexColor(unpack(cfg.AuraStickyColor))
+--		icon.icon:SetDesaturated(false)
+--	elseif icon.filter == "HARMFUL" and not UnitCanAttack("player", unit) and canDispel[({UnitClass("player")})[2]][dtype] and cfg["Auras" .. upper(unit)].StickyAuras.curableDebuffs then
+--		-- Sticky aura: curableDebuffs
+--		icon.icon:SetVertexColor(DebuffTypeColor[dtype].r, DebuffTypeColor[dtype].g, DebuffTypeColor[dtype].b)
+--		icon.icon:SetDesaturated(false)
+--	elseif icon.filter == "HELPFUL" and UnitCanAttack("player", unit) and UnitIsUnit(unit, caster or "") and cfg["Auras" .. upper(unit)].StickyAuras.enemySelfBuffs then
+--		-- Sticky aura: enemySelfBuffs
+--		icon.icon:SetVertexColor(unpack(cfg.AuraStickyColor))
+--		icon.icon:SetDesaturated(false)
+--	else
+--		icon.icon:SetVertexColor(1, 1, 1)
+--		icon.icon:SetDesaturated(true)
+--	end
+	icon.icon:SetVertexColor(1, 1, 1)
+	icon.icon:SetDesaturated(false)
+
+	--[[ 在这里刷新不够及时
+	if (expiration and duration and duration > 0) then
+		local restTime = expiration - GetTime();
+		if (restTime > 0 and restTime < 60) then
+			icon.Duration:SetFormattedText('%d', restTime)
+		else
+			icon.Duration:SetText("m+")
+		end
 	else
-		icon.icon:SetVertexColor(1, 1, 1)
-		icon.icon:SetDesaturated(true)
+		icon.Duration:SetText()
+	end
+	]]
+
+	if(expiration and duration and duration > 0) then
+		icon.restTime = expiration - GetTime()
+	else
+		icon.restTime = 0 
 	end
 end
 
@@ -408,6 +437,21 @@ oUF_Hank.OnLeaveAura = function(self)
 	self.HighlightAura:Hide()
 end
 
+
+local function UpdateAuraDuration(self, elapsed)
+	if(self.restTime) then
+		self.restTime = math.max(self.restTime - elapsed, 0)
+    end
+
+	if (self.restTime == 0) then
+		self.Duration:SetText()
+	elseif (self.restTime >= 60 ) then
+		self.Duration:SetText("m+")
+	else
+		self.Duration:SetFormattedText('%d', self.restTime)
+	end
+end
+
 -- Hook aura scripts, set aura border
 oUF_Hank.PostCreateIcon = function(icons, icon)
 	if cfg.AuraBorder then
@@ -419,6 +463,22 @@ oUF_Hank.PostCreateIcon = function(icons, icon)
 		icons.showType = true
 	end
 	icon.cd:SetReverse(true)
+
+	--隐藏buff/debuff上冷却计时--------------------------------------
+	icon.cd:SetHideCountdownNumbers(true)
+	local StringParent = CreateFrame('Frame', nil, icon)
+	StringParent:SetAllPoints(icon)
+	StringParent:SetFrameLevel(20)
+	icon.count:SetParent(StringParent)
+	icon.count:ClearAllPoints()
+	icon.count:SetPoint('BOTTOMRIGHT', icon, 2, 1)
+	icon.count:SetFontObject('UFFontDuration')
+	local Duration = StringParent:CreateFontString(nil, 'OVERLAY', 'UFFontDuration')
+	Duration:SetPoint('TOPLEFT', icon, 0, -1)
+	icon.Duration = Duration
+	icon:HookScript('OnUpdate', UpdateAuraDuration)
+	-----------------------------------------------------------------
+	---------------------------------
 	icon:HookScript("OnEnter", function() oUF_Hank.OnEnterAura(icons:GetParent(), icon) end)
 	icon:HookScript("OnLeave", function() oUF_Hank.OnLeaveAura(icons:GetParent()) end)
 	-- Cancel player buffs on right click
@@ -641,7 +701,12 @@ oUF_Hank.sharedStyle = function(self, unit, isSingle)
 	end
 
 	-- Name
-	if unit == "target" or unit == "focus" then
+	if false and unit == "player" then
+		name = self:CreateFontString(nil, "OVERLAY")
+		name:SetFontObject("UFFontBig")
+		name:SetPoint("BOTTOMRIGHT", power, "TOPRIGHT", -15, 0)
+		self:Tag(name, "[statusName]")
+	elseif unit == "target" or unit == "focus" then
 		name = self:CreateFontString(nil, "OVERLAY")
 		name:SetFontObject("UFFontBig")
 		name:SetPoint("BOTTOMLEFT", power, "TOPLEFT")
@@ -658,13 +723,92 @@ oUF_Hank.sharedStyle = function(self, unit, isSingle)
 		self:Tag(name, "[petName] @[perhp]%")
 	elseif unit == "targettarget" or  unit == "targettargettarget" or unit == "focustarget" then
 		name = self:CreateFontString(nil, "OVERLAY")
-		name:SetFontObject("UFFontSmall")
+		name:SetFontObject("UFFontMedium")
+		--name:SetFontObject("UFFontBig")
 		name:SetPoint("LEFT")
-		if unit == "targettarget" or unit == "focustarget" then self:Tag(name, "\226\128\186  [smartName] @[perhp]%")
-		elseif unit == "targettargettarget" then self:Tag(name, "\194\187 [smartName] @[perhp]%") end
+		if unit == "targettarget" or unit == "focustarget" then self:Tag(name, ">> [smartName] @[perhp]%")
+		elseif unit == "targettargettarget" then self:Tag(name, ">> >> [smartName] @[perhp]%") end
 	end
-
 	self.name = name
+
+	-- 3D肖像
+	-----------------------------
+	-- 3D Portrait, 以下代码来自 OUF Diablo的core/lib.lua
+	if unit == "target" then
+		local back = CreateFrame("Frame",nil,self)
+		back:SetSize(160,160)
+		--这是上方的代码
+		--back:SetPoint("BOTTOMLEFT", self, "TOP", 50, -25)
+		back:SetPoint("LEFT", self, "RIGHT", 64, 20)
+		self.PortraitHolder = back
+
+		local t = back:CreateTexture(nil,"BACKGROUND",nil,-8)
+		t:SetAllPoints(back)
+		t:SetTexture("Interface\\AddOns\\oUF_Hank\\textures\\portrait_back")
+		t:SetVertexColor(0.1,0.1,0.1,0.9)
+		self.PortraitBack = t
+
+		if true then --3D
+			self.Portrait = CreateFrame("PlayerModel", nil, back)
+			self.Portrait:SetPoint("TOPLEFT",back,"TOPLEFT",36,-36)
+			self.Portrait:SetPoint("BOTTOMRIGHT",back,"BOTTOMRIGHT",-36,36)
+			self.Portrait.PostUpdate = function(portrait, unit)
+				--职业染色边框
+				if unit == "target" then
+					if (UnitIsPlayer(unit)) then
+						local cc = RAID_CLASS_COLORS[select(2, UnitClass(unit))]
+						self.Border:SetVertexColor(cc.r, cc.g, cc.b)
+					else
+						local r,g,b,a = UnitSelectionColor(unit)
+						self.Border:SetVertexColor(r,g,b,a)
+						--[[
+						local reaction = UnitReaction(unit,"player")
+						if reaction == nil then
+							self.Border:SetVertexColor(1,0,0);
+						else
+							local uc = UnitReactionColor[reaction];
+							self.Border:SetVertexColor(uc.r,uc.g,uc.b)
+						end
+						]]
+					end
+				end
+			end
+
+			local borderholder = CreateFrame("Frame", nil, self.Portrait)
+			borderholder:SetAllPoints(back)
+			self.BorderHolder = borderholder
+
+			local border = borderholder:CreateTexture(nil,"BACKGROUND",nil,-6)
+			border:SetAllPoints(borderholder)
+			border:SetTexture("Interface\\AddOns\\oUF_Hank\\textures\\portrait_border")
+			
+			border:SetVertexColor(0.6,0.5,0.5)
+			--border:SetVertexColor(1,0,0,1) --threat test
+			self.Border = border
+
+			local gloss = borderholder:CreateTexture(nil,"BACKGROUND",nil,-5)
+			gloss:SetAllPoints(borderholder)
+			gloss:SetTexture("Interface\\AddOns\\oUF_Hank\\textures\\portrait_gloss")
+			gloss:SetVertexColor(0.9,0.95,1,0.6)
+		else --2D
+		  self.Portrait = back:CreateTexture(nil,"BACKGROUND",nil,-7)
+		  self.Portrait:SetPoint("TOPLEFT",back,"TOPLEFT",27,-27)
+		  self.Portrait:SetPoint("BOTTOMRIGHT",back,"BOTTOMRIGHT",-27,27)
+		  self.Portrait:SetTexCoord(0.15,0.85,0.15,0.85)
+
+		  local border = back:CreateTexture(nil,"BACKGROUND",nil,-6)
+		  border:SetAllPoints(back)
+		  border:SetTexture("Interface\\AddOns\\oUF_Diablo\\media\\portrait_border")
+		  border:SetVertexColor(0.6,0.5,0.5)
+		  self.Border = border
+
+		  local gloss = back:CreateTexture(nil,"BACKGROUND",nil,-5)
+		  gloss:SetAllPoints(back)
+		  gloss:SetTexture("Interface\\AddOns\\oUF_Diablo\\media\\portrait_gloss")
+		  gloss:SetVertexColor(0.9,0.95,1,0.6)
+		end
+	end
+	--3D肖像
 
 	-- Status icons
 	if unit == "player" then
@@ -1218,7 +1362,7 @@ oUF_Hank.sharedStyle = function(self, unit, isSingle)
 			-- 	hide = true
 			-- end
 			for i = 1, oUF_Hank.classResources[playerClass].max do
-				if hide or i > max then
+				if hide or max == nil or i > max then
 					self.ClassPower[i]:Hide()
 					self.ClassPower[i].bg:Hide()
 				else
@@ -1274,26 +1418,28 @@ oUF_Hank.sharedStyle = function(self, unit, isSingle)
 			self.Buffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", offset, -5)
 		end
 		self.Buffs:SetHeight(cfg.BuffSize)
-		self.Buffs:SetWidth(225)
+		self.Buffs:SetWidth(284)
 		self.Buffs.size = cfg.BuffSize
 		self.Buffs.spacing = cfg.AuraSpacing
 		self.Buffs.initialAnchor = "LEFT"
 		self.Buffs["growth-y"] = "DOWN"
 		self.Buffs.num = cfg["Auras" .. upper(unit)].MaxBuffs
 		self.Buffs.filter = "HELPFUL" -- Explicitly set the filter or the first customFilter call won't work
+		--self.Buffs.disableCooldown = true;
 
 		-- Debuffs
 		self.Debuffs = CreateFrame("Frame", unit .. "_Debuffs", self)
 		self.Debuffs:SetPoint("LEFT", relative, "LEFT", offset, 0)
 		self.Debuffs:SetPoint("TOP", relative, "TOP", offset, 0) -- We will reanchor this in PreAuraSetPosition
 		self.Debuffs:SetHeight(cfg.DebuffSize)
-		self.Debuffs:SetWidth(225)
+		self.Debuffs:SetWidth(316)
 		self.Debuffs.size = cfg.DebuffSize
 		self.Debuffs.spacing = cfg.AuraSpacing
 		self.Debuffs.initialAnchor = "LEFT"
 		self.Debuffs["growth-y"] = "DOWN"
 		self.Debuffs.num = cfg["Auras" .. upper(unit)].MaxDebuffs
 		self.Debuffs.filter = "HARMFUL"
+		--self.Debuffs.disableCooldown = true
 
 		-- Buff magnification effect on mouseover
 		self.HighlightAura = CreateFrame("Frame", nil, self)
@@ -1323,18 +1469,20 @@ oUF_Hank.sharedStyle = function(self, unit, isSingle)
 		}
 	end
 
-	-- Castbar
-	if cfg.Castbar and (unit == "player" or unit == "target" or unit == "focus") then
+	-- castbar 不使用自己的施法条，用系统默认的
+	--if cfg.Castbar and (unit == "player" or unit == "target" or unit == "focus") then
+	--if cfg.Castbar and (unit == "target" or unit == "focus") then
+	if cfg.Castbar and (unit == "target" or unit == "focus" or unit=="targettarget") then
 		-- StatusBar
 		local cb = CreateFrame("StatusBar", nil, self)
 		cb:SetStatusBarTexture(cfg.CastbarTexture)
 		cb:SetStatusBarColor(unpack(cfg.colors.castbar.bar))
 		cb:SetSize(cfg.CastbarSize[1], cfg.CastbarSize[2])
-		if unit == "player" then
-			cb:SetPoint("LEFT", self, "RIGHT", (cfg.CastbarIcon and (cfg.CastbarSize[2] + 5) or 0) + 5 + cfg.CastbarMargin[1], cfg.CastbarMargin[2])
+		if unit == "player" then 
+			cb:SetPoint("BOTTOMRIGHT", self, "TOP", (cfg.CastbarIcon and (cfg.CastbarSize[2] + 5) or 0) + 5 + cfg.CastbarMargin[1], cfg.CastbarMargin[2])
 		elseif unit == "focus" then
 			cb:SetSize(0.8 * cfg.CastbarSize[1], cfg.CastbarSize[2])
-			cb:SetPoint("LEFT", self, "RIGHT", -10 - cfg.CastbarFocusMargin[1], cfg.CastbarFocusMargin[2])
+			cb:SetPoint("TOP", self, "BOTTOM", -10 - cfg.CastbarFocusMargin[1], cfg.CastbarFocusMargin[2])
 		else
 			cb:SetPoint("RIGHT", self, "LEFT", (cfg.CastbarIcon and (-cfg.CastbarSize[2] - 5) or 0) - 5 - cfg.CastbarMargin[1], cfg.CastbarMargin[2])
 		end
@@ -1371,10 +1519,10 @@ oUF_Hank.sharedStyle = function(self, unit, isSingle)
 			cb.Text:SetPoint("LEFT", 3, 0)
 			cb.Text:SetPoint("RIGHT", -3, 0)
 		else
-			cb.Text:SetFont(unpack(cfg.CastBarMedium))
+			cb.Text:SetFont(unpack(cfg.CastBarBig))
 			cb.Text:SetShadowOffset(0.8, -0.8)
-			cb.Text:SetPoint("LEFT", 3, 9)
-			cb.Text:SetPoint("RIGHT", -3, 9)
+			cb.Text:SetPoint("LEFT", 3, 3)
+			cb.Text:SetPoint("RIGHT", -3, 3)
 		end
 
 		if unit ~= "focus" then
@@ -1392,7 +1540,7 @@ oUF_Hank.sharedStyle = function(self, unit, isSingle)
 
 			-- Cast time
 			cb.Time = cb:CreateFontString(nil, "OVERLAY")
-			cb.Time:SetFont(unpack(cfg.CastBarBig))
+			cb.Time:SetFont(unpack(cfg.CastBarMedium))
 			cb.Time:SetTextColor(unpack(cfg.colors.castbar.text))
 			cb.Time:SetShadowOffset(0.8, -0.8)
 			cb.Time:SetPoint("TOP", cb.Text, "BOTTOM", 0, -3)
@@ -1483,7 +1631,8 @@ oUF_Hank.sharedStyle = function(self, unit, isSingle)
 	elseif  unit == "target" or unit == "focus" then
 		self:SetSize(250, 50)
 	elseif unit== "pet" or unit == "targettarget" or unit == "targettargettarget" or unit == "focustarget" then
-		self:SetSize(125, 16)
+		--self:SetSize(125, 16)
+		self:SetSize(125, 24)
 	elseif unit:find("boss") then
 		self:SetSize(250, 50)
 	end
@@ -1527,12 +1676,14 @@ end
 
 oUF:RegisterStyle("Hank", oUF_Hank.sharedStyle)
 oUF:SetActiveStyle("Hank")
-oUF:Spawn("player", "oUF_player"):SetPoint("RIGHT", UIParent, "CENTER", -cfg.FrameMargin[1], -cfg.FrameMargin[2])
+-- 这个是放屏幕左边的句子
+-- oUF:Spawn("player", "oUF_player"):SetPoint("CENTER", UIParent, "CENTER", -cfg.PlayerMargin[1], -cfg.PlayerMargin[2])
+oUF:Spawn("player", "oUF_player"):SetPoint("TOP", UIParent, "TOP", -cfg.PlayerMargin[1], -cfg.PlayerMargin[2])
 oUF:Spawn("pet", "oUF_pet"):SetPoint("BOTTOMRIGHT", oUF_player, "TOPRIGHT")
-oUF:Spawn("target", "oUF_target"):SetPoint("LEFT", UIParent, "CENTER", cfg.FrameMargin[1], -cfg.FrameMargin[2])
+oUF:Spawn("target", "oUF_target"):SetPoint("CENTER", UIParent, "CENTER", cfg.TargetMargin[1], -cfg.TargetMargin[2])
 oUF:Spawn("targettarget", "oUF_ToT"):SetPoint("BOTTOMLEFT", oUF_target, "TOPLEFT")
 oUF:Spawn("targettargettarget", "oUF_ToTT"):SetPoint("BOTTOMLEFT", oUF_ToT, "TOPLEFT")
-oUF:Spawn("focus", "oUF_focus"):SetPoint("CENTER", UIParent, "CENTER", -cfg.FocusFrameMargin[1], -cfg.FocusFrameMargin[2])
+oUF:Spawn("focus", "oUF_focus"):SetPoint("LEFT", UIParent, "LEFT", -cfg.FocusFrameMargin[1], -cfg.FocusFrameMargin[2])
 oUF:Spawn("focustarget", "oUF_ToF"):SetPoint("BOTTOMLEFT", oUF_focus, "TOPLEFT", 0, 5)
 
 for i = 1, MAX_BOSS_FRAMES do
@@ -1540,7 +1691,8 @@ for i = 1, MAX_BOSS_FRAMES do
 	_G["oUF_boss" .. i]:SetScale(cfg.FrameScale * cfg.BossFrameScale)
 end
 
-oUF_player:SetScale(cfg.FrameScale)
+oUF_player:SetScale(cfg.FrameScale * cfg.PlayerFrameScale)
+oUF_player:SetAlpha(0.1)
 oUF_pet:SetScale(cfg.FrameScale)
 oUF_target:SetScale(cfg.FrameScale)
 oUF_ToT:SetScale(cfg.FrameScale)
@@ -1553,7 +1705,7 @@ else
 end
 
 if cfg.HideParty then oUF_Hank.HideParty() end
-if cfg.Castbar then oUF_Hank.AdjustMirrorBars() end
+--if cfg.Castbar then oUF_Hank.AdjustMirrorBars() end
 
 if cfg.RangeFade and not IsAddOnLoaded("oUF_SpellRange") then
 	DEFAULT_CHAT_FRAME:AddMessage("oUF_Hank: Please download and install oUF_SpellRange before enabling range checks!", cfg.colors.text[1], cfg.colors.text[2], cfg.colors.text[3])

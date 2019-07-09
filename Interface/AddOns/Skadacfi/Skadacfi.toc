@@ -1,0 +1,12 @@
+## Interface: 80000
+## Title: Raka's |cff00ff00Skada Chat Frame Integrator|r
+## Title-zhCN: Raka's |cff00ff00Skada聊天窗口整合|r
+## Author: Raka
+## Version: 0.5.2
+## X-eMail: i@lotc.cc
+## Dependencies: Skada
+## Notes: Integrates Skada Windows to Chat tabs.
+## Notes-zhCN: 整合Skada窗口到特定的聊天框
+## SavedVariablesPerCharacter: ScfiDB
+
+core.lua

@@ -1,0 +1,18 @@
+tag 68f2fecfe779ea477c6300be421bbdec77224085 v8.0-3
+Author:	Mizukichan <mizukichan@arcor.de>
+Date:	Thu Sep 13 01:10:38 2018 +0200
+
+Tagging as v8.0-3
+
+commit 57cd04682ed56444678ea775a7682a38d9353adc
+Author: Mizukichan <mizukichan@arcor.de>
+Date:   Thu Sep 13 01:10:24 2018 +0200
+
+    TOC bump
+
+commit 855d1edf9fa1b3b09cbcfe8a1d5d7d76185dd5d0
+Author: Mizukichan <mizukichan@arcor.de>
+Date:   Thu Sep 13 01:10:02 2018 +0200
+
+    Updated option description for bosskill screenshots to better reflect the meaning of the settings
+
