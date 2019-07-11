@@ -1,7 +1,0 @@
-## Interface: 80200
-## Title: Neat Plates: Slim Vertical|r
-## Author: Dotfix
-## Version: 2.2
-## Dependencies: NeatPlates, NeatPlatesHub
-
-NeatPlates_Slim_Vertical.lua

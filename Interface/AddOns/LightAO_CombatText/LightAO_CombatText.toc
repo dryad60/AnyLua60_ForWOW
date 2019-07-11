@@ -1,0 +1,12 @@
+## Interface: 80200
+## Title: |cff1a9fc0Light|r AO
+## Notes: 超轻量级的小插件，内含 LightCT、LightLoot、LSTRskin 三款轻量级插件。
+## Version: 18.07.20
+## X-Credits: Paopao001, Lightspark, Siweia
+## X-Vendor: 七曜·星の痕
+
+Init.lua
+Core.lua
+LightCT.lua
+#LightLoot.lua
+#LSTRskin.lua
