@@ -10,8 +10,11 @@
 ## 载入一些需要的底层lib
 embeded_libs.xml
 
+##调整动作条为3*3和位置
 AdjustActionbar.lua
+##任务字体和进副本收起任务
 ObjectiveTracker.lua
+##动作条距离显示，和调整充能数字的大小和颜色
 ActionbarRange.lua
 ##给物品和法术的Tooltip添加一个图标,从Tipachu这个插件里直接COPY的
 Tipachu.lua
@@ -19,6 +22,8 @@ Tipachu.lua
 CloudyUnitInfo.lua
 ##聊天输入框最上面
 EditboxTop.lua
+##更多角色信息显示
+MoreCharacterInfo.lua
 
 ## 来自AbyssUI的, 默认界面的一些修改, 黑色主题
 ## AbyssUI\darkskin.lua
@@ -26,13 +31,13 @@ AbyssUI\castbar.lua
 AbyssUI\sellNrepair.lua
 AbyssUI\tooltip.lua
 ## AbyssUI\chat.lua
-## AbyssUI\default_unitframe.lua
+AbyssUI\default_unitframe.lua
 
 
 ##A4U,NGA
 A4U\ChatFrame.lua
 A4U\PrettifyMinimap.lua
-##A4U\CooldownCount.lua
+A4U\CooldownCount.lua
 A4U\PrettifyBuff.lua
 ##A4U\PrettifyUnitframe.lua
 ##A4U\PrettifyUnitframeAura.lua

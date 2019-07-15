@@ -65,7 +65,20 @@ local function GetFormattedTime(t)
 	end
 end
 
+local hideNumbers = {}
+local function setHideCooldownNumbers(cooldown, hide)
+	if hide then
+		hideNumbers[cooldown] = true
+	else
+		hideNumbers[cooldown] = nil
+	end
+end
+
 function Timer.Start(cd, start, duration, enable, forceShowDrawEdge, modRate)
+	-- hideNumbers 这个进制可以让充能技能不显示CD，代码COPY from TullaCC
+	if cd.noCooldownCount or cd:IsForbidden() or hideNumbers[cd]
+	then return end
+	
 	cd.button = cd.button or cd:GetParent()
 	if cd.button then
 		cd.type = cd.type or GetButtonType(cd.button)
@@ -153,4 +166,8 @@ iCC:SetScript("OnEvent", function()
 		Timer.Update(timer)
 	end
 end)
-hooksecurefunc(getmetatable(CreateFrame("Cooldown", nil, nil, "CooldownFrameTemplate")).__index, "SetCooldown", Timer.Start)
+
+
+local cdIns = getmetatable(CreateFrame("Cooldown", nil, nil, "CooldownFrameTemplate")).__index
+hooksecurefunc(cdIns, "SetCooldown", Timer.Start)
+hooksecurefunc(cdIns, 'SetHideCountdownNumbers', setHideCooldownNumbers)

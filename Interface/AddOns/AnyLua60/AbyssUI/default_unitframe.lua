@@ -171,3 +171,6 @@ end
 
 hooksecurefunc("TextStatusBar_UpdateTextStringWithValues", UpdateHealthValues)
 ----------------------------------------------------
+--
+TargetFrame:SetScale(1.2)
+TargetFrameToT:SetScale(1.1)

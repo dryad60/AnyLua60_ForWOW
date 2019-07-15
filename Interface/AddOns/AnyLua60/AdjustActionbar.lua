@@ -3,7 +3,7 @@ for i = 1,12 do
 	_G["MultiBarLeftButton"..i]:ClearAllPoints()
 --	_G["MultiBarLeftButton"..i]:SetScale(1.2)
 	if (i == 1 or i == 5 or i == 9) then                                                                                  
-		_G["MultiBarLeftButton"..i]:SetPoint("LEFT", MultiBarBottomLeftButton12, "RIGHT", 160, -40 * (i -1) / 4)
+		_G["MultiBarLeftButton"..i]:SetPoint("LEFT", MultiBarBottomLeftButton12, "RIGHT", 160, -32 * (i -1) / 4)
 	else
 		_G["MultiBarLeftButton"..i]:SetPoint("LEFT", _G["MultiBarLeftButton"..i-1], "RIGHT", 3, 0)
 	end
