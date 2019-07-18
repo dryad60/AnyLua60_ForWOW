@@ -24,6 +24,8 @@ CloudyUnitInfo.lua
 EditboxTop.lua
 ##更多角色信息显示
 MoreCharacterInfo.lua
+##默认头像的小修改
+UnitFrames.lua
 
 ## 来自AbyssUI的, 默认界面的一些修改, 黑色主题
 ## AbyssUI\darkskin.lua
