@@ -5,8 +5,8 @@ TargetFrameToT:SetScale(1.1)
 --[目标buff debuff大小] 
 local function UpdateTargetAuraPositions(self, auraName, numAuras, numOppositeAuras, largeAuraList, updateFunc, maxRowWidth, offsetX) 
     local AURA_OFFSET_Y = 3; 
-    local DEBUFF_AURA_SIZE = 32; 
-    local BUFF_AURA_SIZE = 16; 
+    local DEBUFF_AURA_SIZE = 16; 
+    local BUFF_AURA_SIZE = 32; 
     local size; 
     local offsetY = AURA_OFFSET_Y; 
     local rowWidth = 0; 
