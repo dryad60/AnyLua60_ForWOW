@@ -15,3 +15,13 @@
 *.lua_bak
 .vs/
 .WTF/
+Cache/
+*.DLL
+GPUCache/
+Fonts/
+Logs/
+Screenshots/
+UTILS/
+WTF/
+*.exe
+*.dll
