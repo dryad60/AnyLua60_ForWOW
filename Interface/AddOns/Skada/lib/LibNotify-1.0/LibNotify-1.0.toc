@@ -1,4 +1,4 @@
-## Interface: 70100
+## Interface: 80300
 ## Version: @project-revision@
 
 ## Title: Lib: Notify-1.0

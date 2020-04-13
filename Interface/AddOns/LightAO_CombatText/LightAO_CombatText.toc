@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80300
 ## Title: |cff1a9fc0Light|r AO
 ## Notes: 超轻量级的小插件，内含 LightCT、LightLoot、LSTRskin 三款轻量级插件。
 ## Version: 18.07.20

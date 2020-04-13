@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80300
 ## Title: Immersive|cffd6b5e2Fade|r
 ## Notes: Automatically fades out the interface after a period of no interaction
 ## Author: kewhkies

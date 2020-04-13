@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80300
 ## Title: LiteBag
 ## Version: 8.2.0
 ## Author: Xodiv of Proudmoore
