@@ -11,17 +11,17 @@ if not C.UnitFrames then return end
 local function CreateUnitShared(self, unit)
 	local u = unit:match("[^%d]+") -- boss1 -> boss
 
-	-- [[ 前置作業 ]] --	
+	-- [[ 前置作業 ]] --
 	self:RegisterForClicks("AnyUp")	-- Make mouse active
-	
+
 	-- [[ 高亮 ]] --
-	
+
 	local hl = self:CreateTexture(nil, "HIGHLIGHT")
 	hl:SetAllPoints(self)
 	hl:SetTexture(G.media.barhightlight)
 	hl:SetVertexColor(1, 1, 1, .5)
 	hl:SetBlendMode("ADD")
-	
+
 	if self.mystyle == "VL" then
 		hl:SetTexCoord(0, 1, 1, 1, 0, 0, 1, 0)  -- -90度
 	elseif  self.mystyle == "VR" then
@@ -29,10 +29,10 @@ local function CreateUnitShared(self, unit)
 	else
 		hl:SetTexCoord(1, 0, 0, 1)
 	end
-	
+
 	self.Highlight = hl
 	--self.Mouseover = hl
-	
+
 	self:HookScript("OnEnter", function()
 		UnitFrame_OnEnter(self)
 		self.Highlight:Show()
@@ -41,23 +41,23 @@ local function CreateUnitShared(self, unit)
 		UnitFrame_OnLeave(self)
 		self.Highlight:Hide()
 	end)
-	
+
 	-- [[ 血量條 ]] --
-	
+
 	-- 透明模式的邏輯與一般是相反的
 	-- 通常情況：製造一個有底色的背景，上面覆蓋一個狀態條，損血後狀態條縮短，露出背景，而狀態條本身顯示血量漸變色
 	-- 透明模式：製造一個高透明度的背景作為血量條，上面覆蓋一個狀態條，狀態條改為顯示扣血量，然後反轉狀態條填充方向
-	
+
 	-- 創建一個條
 	local Health = F.CreateStatusbar(self, G.addon..unit.."_HealthBar", "ARTWORK", nil, nil, 1, 0, 0, 1)
 	Health:SetAllPoints(self)
 	Health:SetFrameLevel(self:GetFrameLevel())
 	Health:SetReverseFill(true)			-- 反轉狀態條
-	
+
 	if self.mystyle ~= "H" then
 		Health:SetOrientation("VERTICAL")
 	end
-	
+
 	-- 選項
 	Health.colorTapping = true			-- 無拾取權
 	Health.colorDisconnected = true		-- 離線
@@ -70,14 +70,14 @@ local function CreateUnitShared(self, unit)
 	self.Health = Health
 	self.Health.PreUpdate = T.OverrideHealthbar	-- 更新機制：損血量
 	self.Health.PostUpdate = T.PostUpdateHealth	-- 更新機制：顯示損血量，使血量漸變色和透明度隨損血量改變
-	
+
 	-- 主框體背景，這實際上就是透明模式下的血條
 	local HealthBG = F.CreateBD(self.Health, self, 1, .15, .15, .15, .4)
 
 	-- [[ 能量條 ]] --
-	
+
 	local Power = F.CreateStatusbar(self, G.addon..unit.."_PowerBar", "ARTWORK", nil, nil, 1, 1, 1, 1)	-- 不透明的
-	
+
 	if self.mystyle == "H" then
 		Power:SetHeight(C.PPHeight)
 		Power:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -C.PPOffset)	-- 與血量條等寬
@@ -85,7 +85,7 @@ local function CreateUnitShared(self, unit)
 	else
 		Power:SetWidth(C.PPHeight)
 		Power:SetOrientation("VERTICAL")
-		
+
 		if self.mystyle == "VL" then
 			Power:SetPoint("BOTTOMRIGHT", self.Health, "BOTTOMLEFT", -C.PPOffset, 0)	-- 與血量條等寬
 			Power:SetPoint("TOPRIGHT", self.Health, "TOPLEFT", -C.PPOffset, 0)
@@ -113,12 +113,12 @@ local function CreateUnitShared(self, unit)
 	self.Power.PostUpdate = T.PostUpdatePower
 
 	-- [[ 圖示 ]] --
-	
+
 	-- 建立一個提供給圖示依附的父級框體，框體層級高，避免被蓋住
 	local StringParent = CreateFrame("Frame", nil, self)
 	StringParent:SetFrameLevel(self:GetFrameLevel() + 8)
 	self.StringParent = StringParent
-	
+
 	-- 團隊標記
 	local RaidIcon = StringParent:CreateTexture(nil, "OVERLAY")
 	RaidIcon:SetSize(28, 28)
@@ -160,7 +160,7 @@ local function CreateUnitShared(self, unit)
 	self.GroupRoleIndicator = role]]--
 
 	-- [[ 文本/TAGS ]] --
-	
+
 	-- 血量
 	self.Health.value = F.CreateText(self.Power, "OVERLAY", G.Font, G.NameFS, G.FontFlag, "LEFT")
 	self:Tag(self.Health.value, "[unit:hp]")
@@ -173,7 +173,7 @@ local function CreateUnitShared(self, unit)
 	-- 狀態：暫離/忙錄/等級
 	self.Status = F.CreateText(self.Health, "OVERLAY", G.Font, G.NameFS, G.FontFlag, nil)
 	self:Tag(self.Status, "[afkdnd][difficulty][smartlevel][quest] ")
-	
+
 	if C.Fade then
 		self.FadeMinAlpha = C.FadeOutAlpha
 		self.FadeInSmooth = 0.4
@@ -194,34 +194,35 @@ end
 -- 玩家橫式
 local function CreatePlayerStyle(self, unit)
 	self.mystyle = "H"
-	
+
 	-- 框體
     CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.PWidth, C.PHeight)	-- 主框體尺寸
 	T.CreateHealthPrediction(self, unit)-- 吸收盾
-	
+
 	-- 文本
 	self.Health.value:SetPoint("LEFT", 0, 2)
 	self.Power.value:SetPoint("RIGHT", 0, 2)
-	
+
 	-- 特殊能量
 	T.CreateAltPowerBar(self, unit)
 	self.AlternativePower.value:SetPoint("CENTER",  0, -3)
-	
+
 	-- 職業資源
 	T.CreateClassPower(self, unit)
 	T.CreateAddPower(self, unit)
 	T.CreateStagger(self, unit)
-	
+
 	if C.TankResource then
 		T.CreateTankResource(self, unit)
 	end
-	
+
 	if C.Totems then
 		T.CreateTotems(self)
 	end
-	
+
 	-- 施法條
+	--[[
 	if C.StandaloneCastbar then
 		T.CreateStandaloneCastbar(self, unit)
 		self.Castbar:SetWidth(C.CastbarWidth)
@@ -236,10 +237,11 @@ local function CreatePlayerStyle(self, unit)
 		self.Castbar.Time:SetPoint("CENTER", self.Power, "CENTER", 0, 2)
 		self.Castbar.Time:SetJustifyH("CENTER")
 	end
-	
+	]]--
+
 	-- 減益
 	if C.PlayerDebuffs then
-		T.CreateDebuffs(self)		
+		T.CreateDebuffs(self)
 		--self.Debuffs:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT", 1, C.PHeight/2 + C.PPOffset)
 		self.Debuffs["growth-x"] = "RIGHT"
 		self.Debuffs["growth-y"] = "UP"
@@ -249,7 +251,7 @@ local function CreatePlayerStyle(self, unit)
 		self.Debuffs:SetSize(C.PWidth, C.buSize)
 		self.Debuffs.PreUpdate = T.PostUpdatePlayerDebuffs
 	end
-	
+
 	-- 圖示和標記
 	self.RaidTargetIndicator:SetPoint("TOP", self.Health, 0, 16)
 	self.AssistantIndicator:SetPoint("TOPRIGHT", self.Health, -4, C.PHeight/2)
@@ -261,35 +263,35 @@ end
 -- 玩家直式
 local function CreateVPlayerStyle(self, unit)
 	self.mystyle = "VL"
-	
+
 	-- 框體
     CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.PHeight, C.PWidth)	-- 主框體尺寸
 	T.CreateHealthPrediction(self, unit)-- 吸收盾
-	
+
 	-- 文本
 	self.Health.value:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMLEFT", -C.PPOffset, 0)
 	self.Health.value:SetJustifyH("RIGHT")
 	self.Power.value:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMLEFT", -C.PPOffset, G.NameFS + 2)
 	self.Power.value:SetJustifyH("RIGHT")
-	
+
 	-- 特殊能量
 	T.CreateAltPowerBar(self, unit)
 	self.AlternativePower.value:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMLEFT", -C.PPOffset, (G.NameFS+2) * 6)
-	
+
 	-- 職業資源
 	T.CreateClassPower(self, unit)
 	T.CreateAddPower(self, unit)
 	T.CreateStagger(self, unit)
-	
+
 	if C.TankResource then
 		T.CreateTankResource(self, unit)
 	end
-	
+
 	if C.Totems then
 		T.CreateTotems(self)
 	end
-	
+
 	-- 減益
 	if C.PlayerDebuffs then
 		T.CreateDebuffs(self)
@@ -304,8 +306,9 @@ local function CreateVPlayerStyle(self, unit)
 	end
 
 	-- 施法條
+	--[[
 	if C.StandaloneCastbar then
-		T.CreateStandaloneCastbar(self, unit)	
+		T.CreateStandaloneCastbar(self, unit)
 		self.Castbar.Icon:SetPoint(unpack(C.Position.VPlayerCastbar))
 		--self.Castbar.Icon:SetPoint("BOTTOMLEFT", self.Health, "BOTTOMRIGHT", self.Debuffs:GetWidth() + C.PPOffset*3 + C.PPHeight, 0)
 		self.Castbar:SetPoint("BOTTOM", self.Castbar.Icon, "TOP", 0, C.PPOffset)
@@ -320,12 +323,13 @@ local function CreateVPlayerStyle(self, unit)
 		self.Castbar.Text:SetJustifyH("RIGHT")
 		self.Castbar.Time:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMLEFT", -C.PPOffset, (G.NameFS+2)*4)
 		self.Castbar.Time:SetJustifyH("RIGHT")
-		
-		--[[self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, "OVERLAY")
-		self.Castbar.SafeZone:SetTexture(G.media.blank)
-		self.Castbar.SafeZone:SetVertexColor(0, 1, 0, .5)]]--
-	end
-	
+
+		--self.Castbar.SafeZone = self.Castbar:CreateTexture(nil, "OVERLAY")
+		--self.Castbar.SafeZone:SetTexture(G.media.blank)
+		--self.Castbar.SafeZone:SetVertexColor(0, 1, 0, .5)
+	end]]
+
+
 	-- 圖示和標記
 	self.RaidTargetIndicator:SetPoint("BOTTOM", self.Health, "TOP", 0, -10)
 	self.AssistantIndicator:SetPoint("CENTER", self.Health, "BOTTOM", 0, 4)
@@ -340,11 +344,11 @@ local function CreateTargetStyle(self, unit)
 	-- 框體
 	CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.PWidth, C.PHeight)	-- 主框體尺寸
-	
+
 	-- 特殊能量
 	T.CreateAltPowerBar(self, unit)
 	self.AlternativePower.value:SetPoint("CENTER",  0, -3)
-	
+
 	-- 文本
 	self.Name:SetPoint("TOPRIGHT", self.Health, 0, G.NameFS/2 + C.PPHeight)
 	self.Name:SetJustifyH("RIGHT")
@@ -353,8 +357,9 @@ local function CreateTargetStyle(self, unit)
 	self.Health.value:SetJustifyH("RIGHT")
 	self.Power.value:SetPoint("LEFT", 0, 2)
 	self.Power.value:SetJustifyH("LEFT")
-	
+
 	-- 施法條
+	--[[
 	if C.StandaloneCastbar then
 		T.CreateStandaloneCastbar(self, unit)
 		self.Castbar:SetWidth(C.CastbarWidth)
@@ -369,11 +374,11 @@ local function CreateTargetStyle(self, unit)
 		self.Castbar.Time:SetPoint("TOPLEFT", self.Health, 0, G.NameFS/2 + C.PPHeight)
 		self.Castbar.Time:SetJustifyH("LEFT")
 		self.Castbar.Time:SetWidth(self:GetWidth() * 0.5)
-	end
-	
+	end]]
+
 	-- 光環
 	T.CreateAuras(self)
-	
+
 	-- 圖示和標記
 	self.RaidTargetIndicator:SetPoint("RIGHT", self.Health, 14, 0)
 	self.AssistantIndicator:SetPoint("BOTTOM", self.Health, -10, -2)
@@ -383,19 +388,20 @@ end
 -- 目標直式
 local function CreateVTargetStyle(self, unit)
 	self.mystyle = "VR"
-	
+
 	-- 框體
 	CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.PHeight, C.PWidth)	-- 主框體尺寸
-	
+
 	-- 特殊能量
 	T.CreateAltPowerBar(self, unit)
 	self.AlternativePower.value:SetPoint("BOTTOMLEFT", self.Power, "BOTTOMRIGHT", C.PPOffset, (G.NameFS+2)*6)
 
 	-- 光環
 	T.CreateAuras(self)
-	
+
 	-- 施法條
+	--[[
 	if C.StandaloneCastbar then
 		T.CreateStandaloneCastbar(self, unit)
 		self.Castbar.Icon:SetPoint(unpack(C.Position.VTargetCastbar))
@@ -412,19 +418,19 @@ local function CreateVTargetStyle(self, unit)
 		self.Castbar.Text:SetJustifyH("LEFT")
 		self.Castbar.Time:SetPoint("BOTTOMLEFT", self.Power, "BOTTOMRIGHT", C.PPOffset, (G.NameFS+2)*4)
 		self.Castbar.Time:SetJustifyH("LEFT")
-	end
-	
+	end]]
+
 	-- 文本
 	self.Status:SetPoint("BOTTOMLEFT", self.Power, "BOTTOMRIGHT", C.PPOffset, (G.NameFS+2)*3)
-	self.Status:SetJustifyH("LEFT")	
+	self.Status:SetJustifyH("LEFT")
 	self.Name:SetPoint("LEFT", self.Status, "RIGHT", 0, 0)
 	self.Name:SetJustifyH("LEFT")
 	self.Health.value:SetPoint("BOTTOMLEFT", self.Power, "BOTTOMRIGHT", C.PPOffset, 0)
 	self.Health.value:SetJustifyH("LEFT")
 	self.Power.value:SetPoint("BOTTOMLEFT", self.Power, "BOTTOMRIGHT", C.PPOffset, G.NameFS+2)
 	self.Power.value:SetJustifyH("LEFT")
-	
-	
+
+
 	-- 圖示和標記
 	self.RaidTargetIndicator:SetPoint("BOTTOM", self.Health, "TOP", 0, -10)
 	self.AssistantIndicator:SetPoint("BOTTOM", self.Health, 0, -4)
@@ -434,11 +440,11 @@ end
 -- 焦點
 local function CreateFocusStyle(self, unit)
 	self.mystyle = "H"
-	
+
 	-- 框體
-	CreateUnitShared(self, unit)		-- 繼承通用樣式	
+	CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.PWidth, C.PHeight)	-- 主框體尺寸
-	
+
 	-- 文本
 	self.Name:SetPoint("TOPRIGHT", self.Health, 0, G.NameFS/2 + C.PPHeight)
 	self.Name:SetJustifyH("RIGHT")
@@ -447,8 +453,9 @@ local function CreateFocusStyle(self, unit)
 	self.Health.value:SetJustifyH("RIGHT")
 	self.Power.value:SetPoint("LEFT", 0, 2)
 	self.Power.value:SetJustifyH("LEFT")
-	
+
 	-- 施法條
+	--[[
 	if C.StandaloneCastbar then
 		if C.vertTarget then
 			T.CreateStandaloneCastbar(self, unit)
@@ -470,11 +477,11 @@ local function CreateFocusStyle(self, unit)
 		self.Castbar.Time:SetPoint("TOPLEFT", self.Health, 0, G.NameFS/2 + C.PPHeight)
 		self.Castbar.Time:SetJustifyH("LEFT")
 		self.Castbar.Time:SetWidth(self:GetWidth() * 0.5)
-	end
-	
+	end]]
+
 	-- 光環
 	T.CreateAuras(self)
-	
+
 	-- 圖示和標記
 	self.RaidTargetIndicator:SetPoint("RIGHT", self.Health, 14, 0)
 	self.AssistantIndicator:SetPoint("BOTTOM", self.Health, -10, -2)
@@ -484,11 +491,11 @@ end
 -- 簡易焦點
 local function CreateSFocusStyle(self, unit)
 	self.mystyle = "S"
-	
+
 	-- 框體
 	self:SetSize(C.BWidth, C.PHeight)	-- 主框體尺寸
 	self:RegisterForClicks("AnyUp")
-	
+
 	local hl = self:CreateTexture(nil, "HIGHLIGHT")
 	hl:SetAllPoints(self)
 	hl:SetTexture(G.media.barhightlight)
@@ -496,7 +503,7 @@ local function CreateSFocusStyle(self, unit)
 	hl:SetBlendMode("ADD")
 	hl:SetTexCoord(1, 0, 0, 1)
 	self.Highlight = hl
-	
+
 	self:HookScript("OnEnter", function()
 		UnitFrame_OnEnter(self)
 		self.Highlight:Show()
@@ -505,14 +512,14 @@ local function CreateSFocusStyle(self, unit)
 		UnitFrame_OnLeave(self)
 		self.Highlight:Hide()
 	end)
-	
+
 	-- 文本
-	
+
 	-- 血量
 	self.HealthText = F.CreateText(self, "OVERLAY", G.NPFont, G.NPFS*2+4, G.FontFlag, "LEFT")
 	self.HealthText:SetPoint("LEFT", 0, 0)
 	self:Tag(self.HealthText, "[perhp]")
-	
+
 	-- 狀態：等級
 	self.Status = F.CreateText(self, "OVERLAY", G.Font, G.NameFS, G.FontFlag, "RIGHT")
 	self.Status:SetPoint("LEFT", self.HealthText, "RIGHT", 0, 2)
@@ -521,14 +528,14 @@ local function CreateSFocusStyle(self, unit)
 	self.Name = F.CreateText(self, "OVERLAY", G.Font, G.NameFS, G.FontFlag, "RIGHT")
 	self.Name:SetPoint("LEFT", self.Status, "RIGHT", 0, 0)
 	self:Tag(self.Name, "[namecolor][name]")
-	
+
 	-- 能量
 	self.PowerText = F.CreateText(self, "OVERLAY", G.Font, G.NameFS, G.FontFlag, "RIGHT")
 	self.PowerText:SetPoint("TOPLEFT", self.Status, "BOTTOMLEFT", 0, -2)
 	self:Tag(self.PowerText, "[unit:pp]")
-	
+
 	T.CreateAuras(self, unit)
-	
+
 	-- 施法條
 	T.CreateStandaloneCastbar(self, unit)
 	self.Castbar.Icon:SetPoint("RIGHT", self, "LEFT", 2, -2)
@@ -540,7 +547,7 @@ local function CreateSFocusStyle(self, unit)
 	RaidIcon:SetTexture(G.media.raidicon)
 	RaidIcon:SetPoint("LEFT", self.Name, "RIGHT", 0, 0)
 	self.RaidTargetIndicator = RaidIcon
-	
+
 	if C.Fade then
 		self.FadeMinAlpha = C.FadeOutAlpha
 		self.FadeInSmooth = 0.4
@@ -557,16 +564,16 @@ end
 -- 寵物
 local function CreatePetStyle(self, unit)
 	self.mystyle = "H"
-	
+
 	-- 框體
 	CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.TOTWidth, C.PHeight)	-- 主框體尺寸
-	
+
 	-- 文本
 	self.Name:SetPoint("TOPLEFT", self.Health, 0, G.NameFS/2 + C.PPHeight)
 	self.Name:SetJustifyH("LEFT")
 	self.Name:SetWidth(self:GetWidth()*0.9)
-	
+
 	-- 光環
 	T.CreateDebuffs(self)
 	self.Debuffs:SetPoint("LEFT", self.Health, "RIGHT", 6, -2)
@@ -576,7 +583,7 @@ local function CreatePetStyle(self, unit)
 	self.Debuffs.size = C.buSize
 	self.Debuffs.spacing = 5
 	self.Debuffs:SetSize(C.buSize*2, C.buSize)
-	
+
 	-- 圖示和標記
 	self.RaidTargetIndicator:SetPoint("LEFT", self.Health, -14, 0)
 end
@@ -587,11 +594,11 @@ local function CreateVPetStyle(self, unit)
 	-- 框體
 	CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.PHeight, C.TOTWidth)	-- 主框體尺寸
-	
+
 	-- 文本
 	self.Name:SetPoint("BOTTOMRIGHT", self.Power, "BOTTOMLEFT", -C.PPOffset, 0)
 	self.Name:SetJustifyH("RIGHT")
-	
+
 	-- 光環
 	T.CreateDebuffs(self)
 	self.Debuffs:SetPoint("TOPRIGHT", self.Power, "TOPLEFT", -6, -2)
@@ -608,16 +615,16 @@ end
 -- 目標的目標橫式
 local function CreateToTStyle(self, unit)
 	self.mystyle = "H"
-	
+
 	-- 框體
-	CreateUnitShared(self, unit)		-- 繼承通用樣式	
+	CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.TOTWidth, C.PHeight)	-- 主框體尺寸
 
 	-- 文本
 	self.Name:SetPoint("TOPRIGHT", self.Health, 0, G.NameFS/2 + C.PPHeight)
 	self.Name:SetJustifyH("RIGHT")
 	self.Name:SetWidth(self:GetWidth()*0.9)
-	
+
 	-- 光環
 	if UnitCanAttack("player", unit) then
 		-- 敵方顯示增益
@@ -640,7 +647,7 @@ local function CreateToTStyle(self, unit)
 		self.Debuffs.spacing = 5
 		self.Debuffs:SetSize(C.buSize*2, C.buSize)
 	end
-	
+
 	-- 圖示和標記
 	self.RaidTargetIndicator:SetPoint("RIGHT", self.Health, 14, 0)
 end
@@ -648,14 +655,14 @@ end
 -- 目標的目標直式
 local function CreateVToTStyle(self, unit)
 	self.mystyle = "VR"
-	
+
 	-- 框體
-	CreateUnitShared(self, unit)		-- 繼承通用樣式	
+	CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.PHeight, C.TOTWidth)	-- 主框體尺寸
 
 	-- 文本
 	self.Name:SetPoint("BOTTOMLEFT", self.Power, "BOTTOMRIGHT", C.PPOffset, 0)
-	
+
 	-- 光環
 	if UnitCanAttack("player", unit) then
 		-- 敵方顯示增益
@@ -678,7 +685,7 @@ local function CreateVToTStyle(self, unit)
 		self.Debuffs.spacing = 5
 		self.Debuffs:SetSize(C.buSize, C.buSize*2)
 	end
-	
+
 	-- 圖示和標記
 	self.RaidTargetIndicator:SetPoint("BOTTOM", self.Health, "TOP", 0, -10)
 end
@@ -686,16 +693,16 @@ end
 -- 焦點目標
 local function CreateFoTStyle(self, unit)
 	self.mystyle = "H"
-	
+
 	-- 框體
-	CreateUnitShared(self, unit)		-- 繼承通用樣式	
+	CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.TOTWidth, C.PHeight)	-- 主框體尺寸
 
 	-- 文本
 	self.Name:SetPoint("TOPRIGHT", self.Health, 0, G.NameFS/2 + C.PPHeight)
 	self.Name:SetJustifyH("RIGHT")
 	self.Name:SetWidth(self:GetWidth()*0.9)
-	
+
 	-- 光環
 	if UnitCanAttack("player", unit) then
 		-- 敵方顯示增益
@@ -738,11 +745,11 @@ end
 -- 簡易焦點目標
 local function CreateSFoTStyle(self, unit)
 	self.mystyle = "S"
-	
+
 	-- 框體
 	self:SetSize(C.PWidth/2, C.PHeight)	-- 主框體尺寸
 	--self:RegisterForClicks("AnyUp")
-	
+
 	local hl = self:CreateTexture(nil, "HIGHLIGHT")
 	hl:SetAllPoints(self)
 	hl:SetTexture(G.media.barhightlight)
@@ -750,19 +757,19 @@ local function CreateSFoTStyle(self, unit)
 	hl:SetBlendMode("ADD")
 	hl:SetTexCoord(1, 0, 0, 1)
 	self.Mouseover = hl
-	
+
 	-- 文本
-	
+
 	-- 血量
 	self.HealthText = F.CreateText(self, "OVERLAY", G.NPFont, G.NPFS, G.FontFlag, "LEFT")
 	self.HealthText:SetPoint("CENTER", 0, 0)
 	self:Tag(self.HealthText, ">> [perhp]")
-	
+
 	-- 名字
 	self.Name = F.CreateText(self, "OVERLAY", G.Font, G.NameFS, G.FontFlag, "RIGHT")
 	self.Name:SetPoint("BOTTOMLEFT", self.HealthText, "BOTTOMRIGHT", 0, 2)
 	self:Tag(self.Name, "[namecolor][name]")
-	
+
 	-- 光環
 	if UnitCanAttack("player", unit) then
 		-- 敵方顯示增益
@@ -785,7 +792,7 @@ local function CreateSFoTStyle(self, unit)
 		self.Debuffs.spacing = 5
 		self.Debuffs:SetSize(C.buSize*2, C.buSize)
 	end
-	
+
 	-- 團隊標記
 	local RaidIcon = self:CreateTexture(nil, "OVERLAY")
 	RaidIcon:SetSize(24, 24)
@@ -797,9 +804,9 @@ end
 -- 首領
 local function CreateBossStyle(self, unit)
 	self.mystyle = "H"
-	
+
 	-- 框體
-	CreateUnitShared(self, unit)		-- 繼承通用樣式	
+	CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.BWidth, C.PHeight)	-- 主框體尺寸
 
 	-- 文本
@@ -811,22 +818,23 @@ local function CreateBossStyle(self, unit)
 	self.Name:SetWidth(self:GetWidth() * 0.8)
 	self.Health.value:SetPoint("LEFT", 0, 5)
 	self.Power.value:SetPoint("RIGHT", 0, 5)
-	
+
 	-- 特殊能量
 	T.CreateAltPowerBar(self, unit)
 	self.AlternativePower.value:SetPoint("CENTER",  0, -5)
-	
+
 	-- 施法條
+	--[[
 	T.CreateCastbar(self, unit)
 	self.Castbar.Icon:SetPoint("TOPLEFT", self.Health, "TOPRIGHT", 6, 0)
 	self.Castbar.Text:SetPoint("TOPLEFT", self.Health, 0, G.NameFS/2+C.PPHeight)
 	self.Castbar.Text:SetJustifyH("LEFT")
 	self.Castbar.Text:SetWidth(self:GetWidth() * 0.7)
 	self.Castbar.Time:SetPoint("TOPRIGHT", self.Health, 0, G.NameFS/2+C.PPHeight)
-	self.Castbar.Time:SetJustifyH("RIGHT")
-	
+	self.Castbar.Time:SetJustifyH("RIGHT")]]
+
 	-- 減益
-	T.CreateDebuffs(self)		
+	T.CreateDebuffs(self)
 	self.Debuffs:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT", 1, C.PPOffset*2+C.PPHeight)
 	self.Debuffs.initialAnchor = "LEFT"
 	self.Debuffs["growth-x"] = "RIGHT"
@@ -835,9 +843,9 @@ local function CreateBossStyle(self, unit)
 	self.Debuffs.size = C.buSize
 	self.Debuffs.spacing = 5
 	self.Debuffs:SetSize(C.PWidth, C.buSize)
-	
+
 	-- 增益
-	T.CreateBuffs(self)		
+	T.CreateBuffs(self)
 	self.Buffs:SetPoint("BOTTOMRIGHT", self.Health, "TOPRIGHT", -1, C.PPOffset*2+C.PPHeight)
 	self.Buffs.initialAnchor = "RIGHT"
 	self.Buffs["growth-x"] = "LEFT"
@@ -845,7 +853,7 @@ local function CreateBossStyle(self, unit)
 	self.Buffs.size = C.buSize
 	self.Buffs.spacing = 5
 	self.Buffs:SetSize(C.PWidth, C.buSize)
-	
+
 	-- 圖示和標記
 	self.RaidTargetIndicator:SetPoint("RIGHT", self.Health, 14, 0)
 end
@@ -853,9 +861,9 @@ end
 -- 競技場
 local function CreateArenaStyle(self, unit)
 	self.mystyle = "H"
-	
+
 	-- 框體
-	CreateUnitShared(self, unit)		-- 繼承通用樣式	
+	CreateUnitShared(self, unit)		-- 繼承通用樣式
 	self:SetSize(C.BWidth, C.PHeight)	-- 主框體尺寸
 
 	-- 文本
@@ -867,23 +875,24 @@ local function CreateArenaStyle(self, unit)
 	self.Name:SetWidth(self:GetWidth() * 0.8)
 	self.Health.value:SetPoint("LEFT", 0, 5)
 	self.Power.value:SetPoint("RIGHT", 0, 5)
-	
+
 	-- 專精預測
 	self.Spec = F.CreateText(self.Health, "OVERLAY", G.Font, G.NameFS, G.FontFlag, "CENTER")
 	self.Spec:SetPoint("CENTER", self.Health, 0, 0)
 	self:Tag(self.Spec, "[arenaspec]")
 
 	-- 施法條
+	--[[
 	T.CreateCastbar(self, unit)
 	self.Castbar.Icon:SetPoint("TOPLEFT", self.Health, "TOPRIGHT", 6, 0)
 	self.Castbar.Text:SetPoint("TOPLEFT", self.Health, 0, G.NameFS/2+C.PPHeight)
 	self.Castbar.Text:SetJustifyH("LEFT")
 	self.Castbar.Text:SetWidth(self:GetWidth() * 0.7)
 	self.Castbar.Time:SetPoint("TOPRIGHT", self.Health, 0, G.NameFS/2+C.PPHeight)
-	self.Castbar.Time:SetJustifyH("RIGHT")
-	
+	self.Castbar.Time:SetJustifyH("RIGHT")]]
+
 	-- 減益
-	T.CreateDebuffs(self)		
+	T.CreateDebuffs(self)
 	self.Debuffs:SetPoint("BOTTOMLEFT", self.Health, "TOPLEFT", 1, C.PHeight/2+C.PPOffset)
 	self.Debuffs.initialAnchor = "LEFT"
 	self.Debuffs["growth-x"] = "RIGHT"
@@ -891,9 +900,9 @@ local function CreateArenaStyle(self, unit)
 	self.Debuffs.size = C.buSize
 	self.Debuffs.spacing = 5
 	self.Debuffs:SetSize(C.PWidth, C.buSize)
-	
+
 	-- 增益
-	T.CreateBuffs(self)		
+	T.CreateBuffs(self)
 	self.Buffs:SetPoint("BOTTOMRIGHT", self.Health, "TOPRIGHT", -1, C.PHeight/2+C.PPOffset)
 	self.Buffs.initialAnchor = "RIGHT"
 	self.Buffs["growth-x"] = "LEFT"
@@ -901,10 +910,10 @@ local function CreateArenaStyle(self, unit)
 	self.Buffs.size = C.buSize
 	self.Buffs.spacing = 5
 	self.Buffs:SetSize(C.PWidth, C.buSize)
-	
+
 	-- 圖示和標記
 	self.RaidTargetIndicator:SetPoint("RIGHT", self.Health, 14, 0)
-	
+
 	if self.PhaseIndicator and self.PhaseIndicator:IsShown() then
 		self.PhaseIndicator:Hide()
 	end
@@ -958,7 +967,7 @@ end
 -- 生成
 
 oUF:Factory(function(self)
-	
+
 	if C.vertPlayer then
 		-- 玩家
 		self:SetActiveStyle("Player")
@@ -978,7 +987,7 @@ oUF:Factory(function(self)
 		local pet = self:Spawn("pet", "oUF_Pet")
 		pet:SetPoint(unpack(C.Position.Pet))
 	end
-	
+
 	if C.vertTarget then
 		-- 目標
 		self:SetActiveStyle("Target")
@@ -1027,7 +1036,7 @@ oUF:Factory(function(self)
 		end
 
 	end
-	
+
 	if C.Boss then
 		-- 首領
 		self:SetActiveStyle("Boss")
@@ -1042,7 +1051,7 @@ oUF:Factory(function(self)
 			boss[i] = unit
 		end
 	end
-	
+
 	if C.Arena then
 		-- 競技場
 		self:SetActiveStyle("Arena")
