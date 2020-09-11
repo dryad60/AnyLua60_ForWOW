@@ -9,11 +9,11 @@ CastingBarFrame.timer:SetPoint("TOP", CastingBarFrame, "BOTTOM", 0, 0)
 CastingBarFrame.update = .1
 
 --显示图标
-CastingBarFrame.Icon:Show() 
-CastingBarFrame.Icon:SetHeight( 25 ) 
-CastingBarFrame.Icon:SetWidth( 25 ) 
-CastingBarFrame.Icon:ClearAllPoints() 
-CastingBarFrame.Icon:SetPoint( "RIGHT", CastingBarFrame, "LEFT", -8, 2.5 ) 
+CastingBarFrame.Icon:Show()
+CastingBarFrame.Icon:SetHeight( 25 )
+CastingBarFrame.Icon:SetWidth( 25 )
+CastingBarFrame.Icon:ClearAllPoints()
+CastingBarFrame.Icon:SetPoint( "RIGHT", CastingBarFrame, "LEFT", -8, 2.5 )
 
 CastingBarFrame:HookScript("OnUpdate", function(self, elapsed)
     if not self.timer then return end
@@ -31,8 +31,12 @@ CastingBarFrame:HookScript("OnUpdate", function(self, elapsed)
     end
 end)
 
+-- 呼吸条位置
+MirrorTimer1:ClearAllPoints()
+MirrorTimer1:SetPoint("BOTTOM",CastingBarFrame,"TOP", 0, 50)
+
 --Target 默认头像才有效
---TargetFrameSpellBar:ClearAllPoints() 
+--TargetFrameSpellBar:ClearAllPoints()
 --TargetFrameSpellBar:SetPoint("CENTER",UIParent,"CENTER",-35,-95) --坐标
 --TargetFrameSpellBar.SetPoint = function() end
---TargetFrameSpellBar:SetScale(1)--大小 
+--TargetFrameSpellBar:SetScale(1)--大小

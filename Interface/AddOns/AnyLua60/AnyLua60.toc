@@ -1,8 +1,8 @@
 ## Interface: 80300
-## Title: AnyLua<->60 
-## Author: dryad60 
-## Version: 8.0.0 
-## Notes-zhCN: Lua包<->60 
+## Title: AnyLua<->60
+## Author: dryad60
+## Version: 8.0.0
+## Notes-zhCN: Lua包<->60
 
 
 ## 暂时不用，用ImmersiveFade代替了
