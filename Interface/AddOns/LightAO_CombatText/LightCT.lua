@@ -16,10 +16,10 @@ local hdSize = {90, 150}	-- 承受/输出框架大小
 local ifSize = {300, 150}	-- 信息框架大小
 
 local infoP = {"BOTTOM", UIParent, "CENTER", 0, 300}		-- 信息框架位置
-local inputDP = {"RIGHT", UIParent, "CENTER", -150, 0}		-- 承受伤害位置
-local inputHP = {"RIGHT", UIParent, "CENTER", -200, 0}		-- 承受治疗位置
-local outputDP = {"LEFT", UIParent, "CENTER", 150, 0}		-- 输出伤害位置
-local outputHP = {"LEFT", UIParent, "CENTER", 200, 0}		-- 输出治疗位置
+local inputDP = {"RIGHT", UIParent, "CENTER", -60, 0}		-- 承受伤害位置
+local inputHP = {"RIGHT", UIParent, "CENTER", -110, 0}		-- 承受治疗位置
+local outputDP = {"LEFT", UIParent, "CENTER", 60, 0}		-- 输出伤害位置
+local outputHP = {"LEFT", UIParent, "CENTER", 110, 0}		-- 输出治疗位置
 
 local frames = {}
 

@@ -1,0 +1,38 @@
+Ferous Media
+v 1.3
+3-1-2010
+
+Instructions of Use and Installment: Install as you would any other AddOn. 
+	 
+For the ActionButtons, you need rActionBarStyler and rActionButtonStyler in order for it to work. Replace the 'Gloss.tga' inside the rActionButtonStyler with either Gloss1 or Gloss2. Which ever one you choose to use, rename it to Gloss and replace.
+	 
+I plan to add more in the future as I gather more textures, so stay tuned! I have tested this folder, 
+it should work fine.
+
+Any reports of bugs or things not working right, please leave me a comment on the download page. Thanks!
+
+This folder was made with the help of Amenity, she made it to where you don't need shared media :)
+
+-----------------------------------------------
+
+Changelog v 1.2
+3-1-2010
+
+-Added Background Texture (rectoverlay, rectshadow, squareshadow)
+-Added some pixel fonts, please read the read me in the fonts folder if you plan to use them commercially. 
+-Added actionbutton skin Fer3
+
+-----------------------------------------------
+
+Changelog v 1.2
+01-23-2010
+
+-Added Background Texture (Overlay)
+
+-----------------------------------------------
+
+Changelog v 1.1 
+01-07-2010 
+
+-Added 8 new StatusBar textures
+-Added 5 new Border Textures

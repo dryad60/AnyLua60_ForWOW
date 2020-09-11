@@ -1,0 +1,17 @@
+## Interface: 80300
+
+## Title: |cff00ff00Ferous Media|cff00ff00
+## Notes: Cool Stuff...
+## Version: 1.6
+## Author: Coded by Elkano, Textures made by Ferous (lots of inspiration, all textures made scratch by me).
+## X-Category: Miscellaneous
+
+## OptionalDeps: LibSharedMedia-3.0, LibSharedMedia-2.0, SharedMediaLib, SurfaceLib
+
+
+Libs\LibStub.lua
+Libs\CallbackHandler-1.0.lua
+Libs\LibDataBroker-1.1.lua
+Libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+
+Ferous Media.lua

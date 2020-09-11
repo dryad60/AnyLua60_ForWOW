@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80300
 ## Title: AnyLua<->60 
 ## Author: dryad60 
 ## Version: 8.0.0 
