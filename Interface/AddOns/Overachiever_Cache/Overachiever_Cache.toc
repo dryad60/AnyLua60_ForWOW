@@ -1,0 +1,11 @@
+## Interface: 80300
+## Title: Overachiever - Cache
+## Version: 1.0.9
+## Author: Tuhljin
+## Notes: Shorten load times and improve accuracy of cross-faction data.
+## Dependencies: Overachiever
+## SavedVariables: Overachiever_Cache_CritAssets
+## X-Child-Of: Overachiever
+
+TjSetList.lua
+Cache.lua
