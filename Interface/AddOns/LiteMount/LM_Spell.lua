@@ -4,27 +4,29 @@
 
   A mount summoned directly from a spell with no Mount Journal entry.
 
-  Copyright 2011-2019 Mike Battersby
+  Copyright 2011-2020 Mike Battersby
 
 ----------------------------------------------------------------------------]]--
+
+local _, LM = ...
 
 --[===[@debug@
 if LibDebug then LibDebug() end
 --@end-debug@]===]
 
-_G.LM_Spell = setmetatable({ }, LM_Mount)
-LM_Spell.__index = LM_Spell
+LM.Spell = setmetatable({ }, LM.Mount)
+LM.Spell.__index = LM.Spell
 
-function LM_Spell:Get(spellID, ...)
+function LM.Spell:Get(spellID, ...)
 
-    local name, rank, icon = GetSpellInfo(spellID)
+    local name, _, icon = GetSpellInfo(spellID)
 
     if not name then
-        LM_Debug("LM_Mount: Failed GetSpellInfo #"..spellID)
+        LM.Debug("LM.Mount: Failed GetSpellInfo #"..spellID)
         return
     end
 
-    local m = LM_Mount.new(self, spellID)
+    local m = LM.Mount.new(self, spellID)
 
     m.name = name
     m.spellID = spellID
@@ -40,14 +42,14 @@ function LM_Spell:Get(spellID, ...)
     return m
 end
 
-function LM_Spell:Refresh()
+function LM.Spell:Refresh()
     self.isCollected = IsSpellKnown(self.spellID)
-    LM_Mount.Refresh(self)
+    LM.Mount.Refresh(self)
 end
 
-function LM_Spell:IsCastable()
+function LM.Spell:IsCastable()
     if not IsSpellKnown(self.spellID) or not IsUsableSpell(self.spellID) then
         return false
     end
-    return LM_Mount.IsCastable(self)
+    return LM.Mount.IsCastable(self)
 end

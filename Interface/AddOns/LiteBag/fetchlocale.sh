@@ -2,8 +2,8 @@
 
 # Password-encrypted for git storage.
 if [ "$APIKEY" = "" ]; then
-    APIKEY=`openssl enc -d -a -A -aes-256-cbc <<_EOT
-U2FsdGVkX1+CTBBSfInL8LMPiI7om41sGD6f5HWBCVDyFpIym5dodQNe3Y0L3fz+S3qdQWvkZV5Sj7mx9Yh9rA==
+    APIKEY=`openssl enc -d -a -A -aes-256-cbc -pbkdf2 <<_EOT
+U2FsdGVkX1+IBMmKkSX455AIlhLvOq+/N2wbJOWIQotkGeL7J9fMaZLVXbHtH1HFY4r8nSo4/FEnWuwkQDQl0A==
 _EOT`
 fi
 
@@ -19,10 +19,6 @@ header () {
 fetch () {
     curl -s -H "X-Api-Token: $APIKEY" "https://wow.curseforge.com/api/projects/50424/localization/export?export-type=TableAdditions&lang=$1&unlocalized=Ignore" | awk -F' = ' '{ printf("    %-21s = %s\n", $1, $2) }'
 }
-
-# header "enUS / enGB / Default"
-# fetch enUS
-# echo
 
 for locale in "deDE" "esES" "frFR" "itIT" "koKR" "ptBR" "ruRU" "zhCN" "zhTW"; do
 

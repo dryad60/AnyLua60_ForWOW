@@ -1,19 +1,18 @@
-tag 54f3658a9449c1db8fe181c43776fe9d9617e908 8.2.2
+tag 8d3bcba88fc6b6e5d676098184fd7ac153fdea56 9.0.5
 Author:	Mike "Xodiv" Battersby <mib@post.com>
-Date:	Wed Jun 26 22:39:36 2019 +1000
+Date:	Fri Oct 16 09:17:21 2020 +1100
 
-LiteMount 8.2.2
-Fix a problem where swimming mounts would sometimes summon on land
+LiteMount 9.0.4
 
-commit 65688bcc5293923e5aae865cfd1bcfce55a52494
+commit 551db25cb0854003cc114c6cee8638f68db8847b
 Author: Mike "Xodiv" Battersby <mib@post.com>
-Date:   Wed Jun 26 22:39:19 2019 +1000
+Date:   Fri Oct 16 09:14:35 2020 +1100
 
-    Better swimming check
+    IsFlyableArea() overrides for Broken Isles and Garrison ID updates
 
-commit 8277c4a7549c0ffea9cc3d5a54eaf92bab9ac544
+commit c32cc86f43bb31d586524a6f516d5968cf0d2901
 Author: Mike "Xodiv" Battersby <mib@post.com>
-Date:   Wed Jun 26 21:37:06 2019 +1000
+Date:   Fri Oct 16 09:14:01 2020 +1100
 
-    Fixups to SmartMount swimming check
+    Fix error with [waterwalking] condition.
 

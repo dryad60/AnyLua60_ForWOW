@@ -230,7 +230,7 @@ local function getNextNoticeFrame(texture, startHidden)
 		frameTex:SetTexCoord(0.0, 0.7109375, 0.0, 0.7109375)
 		frameTex:SetWidth(76); frameTex:SetHeight(76);
 
-		local frameBorder = CreateFrame("Frame", "$parentBorder", frame)
+		local frameBorder = CreateFrame("Frame", "$parentBorder", frame, "BackdropTemplate")
 		frameBorder:SetAllPoints(frame)
 		frameBorder:SetBackdrop( {
 			edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", tile = true, tileSize = 16, edgeSize = 16,

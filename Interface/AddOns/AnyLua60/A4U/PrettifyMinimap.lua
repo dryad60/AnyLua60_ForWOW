@@ -4,34 +4,58 @@
 
 --  迷你地图  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	
+
 ------------
 -- Shadow --
 ------------
+--
 local shadows = {
-	edgeFile = "Interface\\AddOns\\AnyLua60\\A4U\\media\\outer_shadow",
+	edgeFile = "Interface\\AddOns\\A4U\\media\\outer_shadow",
 	edgeSize = 6,
 	insets = 6,
 	color = { r = 0, g = 0, b = 0, a = 1},
 }
 function CreateShadow(f)
 	if f.shadow then return end
-	local shadow = CreateFrame("Frame", nil, f)
+	local shadow = CreateFrame("Frame", nil, f, "BackdropTemplate")
 	shadow:SetFrameLevel(1)
 	shadow:SetFrameStrata(f:GetFrameStrata())
-	shadow:SetPoint("TOPLEFT", -3, 3)
-	shadow:SetPoint("BOTTOMRIGHT", 3, -3)
+	shadow:SetPoint("TOPLEFT", -5, 5)
+	shadow:SetPoint("BOTTOMRIGHT", 5, -5)
 	shadow:SetBackdrop(shadows)
 	shadow:SetBackdropColor(0, 0, 0, 0)
-	shadow:SetBackdropBorderColor(0, 0, 0, 1)
+	shadow:SetBackdropBorderColor(0, 0, 0, 0.8)
 	f.shadow = shadow
 	return shadow
 end
-
 CreateShadow(Minimap)
 
+
+	--[[shadow++++++9.0新加++++++++++++++++++++
+local shadowBackdrop = {edgeFile = "Interface\\AddOns\\A4U\\media\\outer_shadow"}
+
+function CreateShadow(frame)
+	if frame.__shadow then return end
+
+	if frame:GetObjectType() == "Texture" then frame = self:GetParent() end
+
+	shadowBackdrop.edgeSize = 6
+	frame.__shadow = CreateFrame("Frame", nil, frame, "BackdropTemplate")
+	frame.__shadow:SetPoint("TOPLEFT", -4, 4)
+	frame.__shadow:SetPoint("BOTTOMRIGHT", 4, -4)
+	frame.__shadow:SetBackdrop(shadowBackdrop)
+	frame.__shadow:SetBackdropBorderColor(0, 0, 0, 1)
+	frame.__shadow:SetFrameLevel(1)
+
+	return frame.__shadow
+end
+
+CreateShadow(Minimap)
+	--shadow++++++9.0新加++++++++++++++++++++]]
+
+
 ----------------
--- Shadow End -- 
+-- Shadow End --
 ----------------
 
 
@@ -42,7 +66,6 @@ Minimap:SetScale(1)
 Minimap:SetFrameStrata("LOW")
 Minimap:ClearAllPoints()
 Minimap:SetPoint("TOPRIGHT"	, UIParent, -6, -22)
---Minimap:SetPoint("BOTTOMLEFT", MainMenuBarArtFrame.LeftEndCap, -100, 150)
 
 
 -- Zone text
@@ -55,9 +78,40 @@ MinimapZoneText:SetJustifyH("CENTER")
 
 
 -- Border
-Minimap:SetBackdrop{edgeFile = 'Interface\\Buttons\\WHITE8x8', edgeSize = 2, insets = {left = -1, right = -1, top = -1, bottom = -1}}
-Minimap:SetBackdropColor(1, 1, 1, 1)
-Minimap:SetBackdropBorderColor(0, 0, 0, 1)
+----Minimap:SetBackdrop{edgeFile = 'Interface\\Buttons\\WHITE8x8', edgeSize = 2, insets = {left = -1, right = -1, top = -1, bottom = -1}}
+----Minimap:SetBackdropColor(1, 1, 1, 1)
+----Minimap:SetBackdropBorderColor(0, 0, 0, 1)
+
+
+local frame = CreateFrame("Frame", name)
+frame:Hide()
+frame:SetScript("OnEvent", function(f, event, ...)
+	f[event](f, event, ...)
+end)
+
+function frame:PLAYER_LOGIN(event)
+	self:UnregisterEvent(event)
+	self[event] = nil
+
+	local Minimap = Minimap
+	self.SetParent(Minimap, UIParent)
+
+	local backdrop = self.CreateTexture(Minimap, nil, "BACKGROUND")
+	backdrop:SetPoint("CENTER", Minimap, "CENTER")
+	backdrop:SetSize(155, 153)
+	backdrop:SetColorTexture(0,0,0,1)
+	local mask = self:CreateMaskTexture()
+	mask:SetAllPoints(backdrop)
+	mask:SetParent(Minimap)
+	backdrop:AddMaskTexture(mask)
+	frame.backdrop = backdrop
+	frame.mask = mask
+
+	--Minimap:SetMaskTexture("Interface\\BUTTONS\\WHITE8X8")
+	mask:SetTexture("Interface\\BUTTONS\\WHITE8X8")
+
+end
+frame:RegisterEvent("PLAYER_LOGIN")
 
 
 -- Hide Stuff
@@ -76,17 +130,17 @@ Minimap:SetQuestBlobRingScalar(0)----任务扫描圈
 MiniMapWorldMapButton:Hide()
 
 
--- QueueStatus: Raid, Battelfield, 
+-- QueueStatus: Raid, Battelfield,
 QueueStatusMinimapButton:ClearAllPoints()
 QueueStatusMinimapButton:SetPoint("BOTTOMLEFT", Minimap, -16, 30)
 QueueStatusMinimapButtonIcon:SetScale(1)
 
 
--- Difficulty 
+-- Difficulty
 local iconScale = 0.9
 
 GuildInstanceDifficulty:SetParent(Minimap)
-GuildInstanceDifficulty:ClearAllPoints() 
+GuildInstanceDifficulty:ClearAllPoints()
 GuildInstanceDifficulty:SetPoint("TOPLEFT", Minimap, "TOPLEFT", 1, -1)
 GuildInstanceDifficulty:SetScale(iconScale)
 
@@ -109,7 +163,7 @@ LFG_EYE_TEXTURES.unknown = LFG_EYE_TEXTURES.default
 -- Time
 LoadAddOn("Blizzard_TimeManager")
 select(1, TimeManagerClockButton:GetRegions()):Hide()
-TimeManagerClockTicker:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")--TimeManagerClockTicker:SetFont("Interface\\AddOns\\AnyLua60\\A4U\\media\\Pixel.ttf", 14, "OUTLINE")
+TimeManagerClockTicker:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")--TimeManagerClockTicker:SetFont("Interface\\AddOns\\A4U\\media\\Pixel.ttf", 14, "OUTLINE")
 TimeManagerClockTicker:SetJustifyH("RIGHT")
 TimeManagerClockTicker:SetTextColor(1, 0.82, 0.1)
 TimeManagerClockTicker:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -2)
@@ -118,7 +172,7 @@ TimeManagerClockButton:SetPoint("TOPRIGHT", Minimap, "BOTTOMRIGHT", 0, -2)
 
 
 -- Mail
-local mailicon = "Interface\\AddOns\\AnyLua60\\A4U\\media\\mail"
+local mailicon = "Interface\\AddOns\\A4U\\media\\mail"
 MiniMapMailFrame:ClearAllPoints()
 MiniMapMailFrame:SetPoint("BOTTOM", Minimap, "BOTTOM", 0, 5)
 MiniMapMailFrame:SetSize(16,10)
@@ -133,7 +187,7 @@ Minimap:SetScript('OnMouseWheel', function(self, delta)
     if delta > 0 then
         Minimap_ZoomIn()
     else
-        Minimap_ZoomOut() 
+        Minimap_ZoomOut()
     end
 end)
 
@@ -163,6 +217,7 @@ end
 
 
 --  小地图隐藏日历、要塞图标  -------------------------------------------------------------------------------------------------------------------------------------------------------------
+hooksecurefunc("GarrisonLandingPageMinimapButton_UpdateIcon", function(self)
 GarrisonLandingPageMinimapButton:ClearAllPoints()
 --GarrisonLandingPageMinimapButton:SetWidth(40)
 --GarrisonLandingPageMinimapButton:SetHeight(40)
@@ -173,6 +228,7 @@ GarrisonLandingPageMinimapButton:SetScript("OnEnter", function()
 end)
 GarrisonLandingPageMinimapButton:SetScript("OnLeave", function()
 	GarrisonLandingPageMinimapButton:FadeOut()
+end)
 end)
 
 
@@ -220,12 +276,12 @@ end
 
 
 
---[[  小地图坐标  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--[[  小地图坐标(内存涨太快)  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Minimap:CreateFontString("MapCoordsMinimapText","OVERLAY","NumberFontNormal");
 MapCoordsMinimapText:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 1, -2);
 MapCoordsMinimapText:SetTextColor(1, 0.82, 0.1, 1);
 MapCoordsMinimapText:SetText("Hook Failed!");
-MapCoordsMinimapText:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")--MapCoordsMinimapText:SetFont("Interface\\AddOns\\AnyLua60\\A4U\\media\\Pixel.ttf", 14, 'OUTLINE')
+MapCoordsMinimapText:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")--MapCoordsMinimapText:SetFont("Interface\\AddOns\\A4U\\media\\Pixel.ttf", 14, 'OUTLINE')
 MapCoordsMinimapText:SetJustifyH("LEFT");
 
 local EventFrame=CreateFrame("Frame",nil,Minimap);
@@ -240,12 +296,12 @@ end);]]
 
 
 --  小地图坐标  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Minimap.coords = Minimap:CreateFontString(nil, 'ARTWORK') 
+Minimap.coords = Minimap:CreateFontString(nil, 'ARTWORK')
 Minimap.coords:SetPoint("TOPLEFT", Minimap, "BOTTOMLEFT", 1, -2);
 Minimap.coords:SetTextColor(1, 0.82, 0.1, 1);
 Minimap.coords:SetFont(STANDARD_TEXT_FONT, 12, "OUTLINE")
 Minimap.coords:SetJustifyH("LEFT");
-Minimap:HookScript("OnUpdate", function(self, elapsed) 
+Minimap:HookScript("OnUpdate", function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
     if (self.elapsed < 0.2) then return end
     self.elapsed = 0
@@ -260,17 +316,17 @@ end)
 
 
 --  大地图坐标  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-WorldMapFrame.playerPos = WorldMapFrame.BorderFrame:CreateFontString(nil, 'ARTWORK') 
-WorldMapFrame.playerPos:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE") 
-WorldMapFrame.playerPos:SetJustifyH("LEFT") 
+WorldMapFrame.playerPos = WorldMapFrame.BorderFrame:CreateFontString(nil, 'ARTWORK')
+WorldMapFrame.playerPos:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+WorldMapFrame.playerPos:SetJustifyH("LEFT")
 WorldMapFrame.playerPos:SetPoint('LEFT', WorldMapFrameCloseButton, 'LEFT', -180, 0) ----WorldMapFrame.playerPos:SetPoint("BOTTOMRIGHT", WorldMapFrame.BorderFrame, "BOTTOM", -100, 22)
-WorldMapFrame.playerPos:SetTextColor(1, 0.82, 0.1) 
-WorldMapFrame.mousePos = WorldMapFrame.BorderFrame:CreateFontString(nil, "ARTWORK") 
-WorldMapFrame.mousePos:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE") 
-WorldMapFrame.mousePos:SetJustifyH("LEFT") 
+WorldMapFrame.playerPos:SetTextColor(1, 0.82, 0.1)
+WorldMapFrame.mousePos = WorldMapFrame.BorderFrame:CreateFontString(nil, "ARTWORK")
+WorldMapFrame.mousePos:SetFont(STANDARD_TEXT_FONT, 14, "OUTLINE")
+WorldMapFrame.mousePos:SetJustifyH("LEFT")
 WorldMapFrame.mousePos:SetPoint('LEFT', WorldMapFrame.playerPos, 'LEFT', -160, 0) ----WorldMapFrame.mousePos:SetPoint("BOTTOMLEFT", WorldMapFrame.BorderFrame, "BOTTOM", -60, 22)
-WorldMapFrame.mousePos:SetTextColor(1, 0.82, 0.1) 
-WorldMapFrame:HookScript("OnUpdate", function(self, elapsed) 
+WorldMapFrame.mousePos:SetTextColor(1, 0.82, 0.1)
+WorldMapFrame:HookScript("OnUpdate", function(self, elapsed)
     self.elapsed = (self.elapsed or 0) + elapsed
     if (self.elapsed < 0.2) then return end
     self.elapsed = 0

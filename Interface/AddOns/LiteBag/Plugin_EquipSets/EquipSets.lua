@@ -14,19 +14,22 @@
 
 ----------------------------------------------------------------------------]]--
 
-local LOCATION_BAGSLOT_MASK = 0xf00f3f
-
 -- This is a guess at something I don't really understand, ItemLocations.
 -- On one hand this seems pretty inefficient. On the other hand, the Blizzard
 -- equivalent makes you use strsplit, so frankly this has to be faster.
 
 local function GetEquipmentSetMemberships(bag, slot)
     local ids = { }
-    local location = 0x300000 + bit.lshift(bag, 8) + slot
-    for i,id in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
+
+    for i, id in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
         local locations = C_EquipmentSet.GetItemLocations(id) or {}
         for _, l in pairs(locations) do
-            if bit.band(l, LOCATION_BAGSLOT_MASK) == location then
+            local lplayer, lbank, lbags, lvoid, lslot, lbag = EquipmentManager_UnpackLocation(l)
+            if lbank == true and lbags == false then
+                lbag = -1
+                lslot = lslot - 47
+            end
+            if slot == lslot and bag == lbag then
                 ids[i] = true
             end
         end
@@ -107,5 +110,5 @@ local function Update(button)
     end
 end
 
-LiteBagItemButton_RegisterHook('LiteBagItemButton_Update', Update)
-LiteBagPanel_AddUpdateEvent("EQUIPMENT_SETS_CHANGED")
+LiteBag_RegisterHook('LiteBagItemButton_Update', Update)
+LiteBag_AddUpdateEvent("EQUIPMENT_SETS_CHANGED")

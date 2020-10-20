@@ -2,7 +2,7 @@
 
   LiteBag/Options.lua
 
-  Copyright 2013-2018 Mike Battersby
+  Copyright 2013-2020 Mike Battersby
 
   Released under the terms of the GNU General Public License version 2 (GPLv2).
   See the file LICENSE.txt.
@@ -13,13 +13,8 @@ local addonName, addonTable = ...
 
 local L = LiteBag_Localize
 
-local function UpgradeDBVersion()
-    local db = LiteBag_OptionsDB
-end
-
 function LiteBag_InitializeOptions()
     LiteBag_OptionsDB = LiteBag_OptionsDB or { }
-    UpgradeDBVersion()
 end
 
 function LiteBag_SetFrameOption(frame, option, value)
@@ -133,8 +128,8 @@ function LiteBag_OptionSlashFunc(argstr)
     end
 
     if cmd == 'inventory.gaps' then
-        x = tonumber(arg1)
-        y = tonumber(arg2)
+        local x = tonumber(arg1)
+        local y = tonumber(arg2)
         if x == 0 then x = nil end
         if y == 0 then y = nil end
         LiteBag_SetFrameOption(LiteBagInventoryPanel, 'xbreak', x)

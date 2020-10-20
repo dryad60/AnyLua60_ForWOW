@@ -2,7 +2,7 @@
 
   LiteBag/LiteBagInventory.lua
 
-  Copyright 2013-2018 Mike Battersby
+  Copyright 2013-2020 Mike Battersby
 
   Released under the terms of the GNU General Public License version 2 (GPLv2).
   See the file LICENSE.txt.
@@ -49,6 +49,7 @@ function LiteBagInventory_Initialize(self)
 
     local panel = CreateFrame('Frame', 'LiteBagInventoryPanel', self, 'LiteBagPanelTemplate')
     LiteBagPanel_Initialize(panel, INVENTORY_BAG_IDS)
+    panel.defaultColumns = 8
     panel.canResize = true
     LiteBagFrame_AddPanel(self, panel, GetBagName(0))
 

@@ -4,9 +4,11 @@
 
   Variables usable in action conditions.
 
-  Copyright 2011-2019 Mike Battersby
+  Copyright 2011-2020 Mike Battersby
 
 ----------------------------------------------------------------------------]]--
+
+local _, LM = ...
 
 --[===[@debug@
 if LibDebug then LibDebug() end
@@ -27,9 +29,33 @@ CONSTS["{CLASS}"] =
         return v
     end
 
+CONSTS["{CLASS_L}"] =
+    function ()
+        local v = UnitClass("PLAYER")
+        return v
+    end
+
 CONSTS["{FACTION}"] =
     function ()
         local v = UnitFactionGroup("player")
+        return v
+    end
+
+CONSTS["{FACTION_L}"] =
+    function ()
+        local _, v = UnitFactionGroup("player")
+        return v
+    end
+
+CONSTS["{RACE}"] =
+    function ()
+        local _, v = UnitRace("player")
+        return v
+    end
+
+CONSTS["{RACE_L}"] =
+    function ()
+        local v = UnitRace("player")
         return v
     end
 
@@ -41,7 +67,7 @@ VARS["{SPECID}"] =
 
 VARS["{SPEC}"] =
     function ()
-        local v = GetSpecialization()
+        local _, v = GetSpecializationInfo(GetSpecialization())
         return v
     end
 
@@ -53,29 +79,29 @@ VARS["{ROLE}"] =
 
 VARS["{MAPID}"] =
     function ()
-        return LM_Location.areaID
+        return LM.Environment.uiMapID
     end
 
 -- this should totally be some kind of metatable but who cares
 
-_G.LM_Vars = {}
+LM.Vars = {}
 
-function LM_Vars:GetVar(v)
+function LM.Vars:GetVar(v)
     if VARS[v] then
         return VARS[v]()
     end
 end
 
-function LM_Vars:GetConst(v)
+function LM.Vars:GetConst(v)
     if CONSTS[v] then
         return CONSTS[v]()
     end
 end
 
-function LM_Vars:StrSubConsts(str)
+function LM.Vars:StrSubConsts(str)
     return str:gsub('{.-}', function (k) return self:GetConst(k) end)
 end
 
-function LM_Vars:StrSubVars(str)
+function LM.Vars:StrSubVars(str)
     return str:gsub('{.-}', function (k) return self:GetVar(k) end)
 end

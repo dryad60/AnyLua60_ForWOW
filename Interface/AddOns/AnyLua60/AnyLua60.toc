@@ -1,4 +1,4 @@
-## Interface: 80300
+## Interface: 90001
 ## Title: AnyLua<->60
 ## Author: dryad60
 ## Version: 8.0.0
@@ -8,7 +8,7 @@
 ## 暂时不用，用ImmersiveFade代替了
 ## code.lua
 ## 载入一些需要的底层lib
-embeded_libs.xml
+#embeded_libs.xml
 
 ##调整动作条为3*3和位置
 AdjustActionbar.lua
@@ -33,7 +33,7 @@ AbyssUI\castbar.lua
 AbyssUI\sellNrepair.lua
 AbyssUI\tooltip.lua
 ## AbyssUI\chat.lua
-AbyssUI\default_unitframe.lua
+#AbyssUI\default_unitframe.lua
 
 
 ##A4U,NGA

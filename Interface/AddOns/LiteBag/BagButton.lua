@@ -2,7 +2,7 @@
 
   LiteBag/BagButton.lua
 
-  Copyright 2013-2018 Mike Battersby
+  Copyright 2013-2020 Mike Battersby
 
   Released under the terms of the GNU General Public License version 2 (GPLv2).
   See the file LICENSE.txt.
@@ -52,9 +52,6 @@ function LiteBagBagButton_Update(self)
     self.bagID = self:GetID()
     self.isBank = BankContainers[self:GetID()]
 
-    -- XXX FIXME XXX
-    -- No slotID for backpack/bank, can they not be filtered?
-
     if self.bagID == BACKPACK_CONTAINER then
         SetItemButtonTexture(self, 'Interface\\Buttons\\Button-Backpack-Up')
         return
@@ -67,7 +64,6 @@ function LiteBagBagButton_Update(self)
 
     LiteBagBagButton_SetFilterIcon(self)
 
-    local texture = _G[self:GetName()..'IconTexture']
     local textureName = GetInventoryItemTexture('player', self.slotID)
 
     local numBankSlots, bankFull = GetNumBankSlots()
@@ -108,7 +104,7 @@ function LiteBagBagButton_OnLoad(self)
     self.FilterIcon.Icon = self.FilterIcon
 end
 
-function LiteBagBagButton_OnEvent(self)
+function LiteBagBagButton_OnEvent(self, event, ...)
     if event == 'INVENTORY_SEARCH_UPDATE' then
         if IsContainerFiltered(self.bagID) then
             self.searchOverlay:Show()

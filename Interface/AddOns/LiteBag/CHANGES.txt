@@ -1,18 +1,14 @@
-tag 86545f670a209391acd353c7a4b682ad769235f4 8.2.0
+tag b9e7ead4927a3d35467548c3c5b8a51e216206f1 9.0.2
 Author:	Mike "Xodiv" Battersby <mib@post.com>
-Date:	Wed Jun 26 17:37:07 2019 +1000
+Date:	Thu Oct 15 09:08:58 2020 +1100
 
-Tagging 8.2.0 for release
+LiteBag 9.0.2
+- Bank fixes
 
-commit 467653f75d3014c6762bd7fc6e73845da88b7808
+commit a823ae8991ef64c74e48836a247084a028089ac3
 Author: Mike "Xodiv" Battersby <mib@post.com>
-Date:   Wed Jun 26 17:36:39 2019 +1000
+Date:   Thu Oct 15 09:08:16 2020 +1100
 
-    Update ToC for WoW 8.2
-
-commit e479431323988a7632e0c86ae3fb5bec54d54a77
-Author: Mike "Xodiv" Battersby <mib@post.com>
-Date:   Thu Jun 6 08:55:26 2019 +1000
-
-    A hack to resize frame when changing bags.
+    Fix tooltips on first 14 bank slots.
+    Use a darker bank background
 

@@ -2,7 +2,7 @@
 
   LiteBag/BankFrame.lua
 
-  Copyright 2013-2018 Mike Battersby
+  Copyright 2013-2020 Mike Battersby
 
   Released under the terms of the GNU General Public License version 2 (GPLv2).
   See the file LICENSE.txt.
@@ -54,7 +54,8 @@ function LiteBagBank_Initialize(self)
 
     -- Different inset texture for the bank
 
-    self.Inset.Bg:SetTexture('Interface\\FrameGeneral\\UI-Background-Rock', true, true)
+    self.Inset.Bg:SetTexture("Interface\\BankFrame\\Bank-Background", true, true)
+    self.Inset.Bg:SetVertexColor(0.4, 0.4, 0.4, 1)
 
     -- Select the right search box 
     self.searchBox = BankItemSearchBox

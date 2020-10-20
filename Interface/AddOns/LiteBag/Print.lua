@@ -2,7 +2,7 @@
 
   LiteBag/Print.lua
 
-  Copyright 2013-2018 Mike Battersby
+  Copyright 2013-2020 Mike Battersby
 
   Released under the terms of the GNU General Public License version 2 (GPLv2).
   See the file LICENSE.txt.
@@ -15,16 +15,9 @@ local addonName, addonTable = ...
     Printing to active chat frame.
 ----------------------------------------------------------------------------]]--
 
-local function ActiveChatFrame()
-    for i = 1, NUM_CHAT_WINDOWS do
-        local f = _G['ChatFrame'..i]
-        if f and f:IsShown() then return f end
-    end
-    return DEFAULT_CHAT_FRAME
-end
-
 function LiteBag_Print(...)
-    ActiveChatFrame():AddMessage('|cff00ff00LiteBag:|r ' .. format(...))
+    local f = SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME
+    f:AddMessage('|cff00ff00LiteBag:|r ' .. format(...))
 end
 
 function LiteBag_Debug(...)

@@ -2,7 +2,7 @@
 
   LiteBag/UIOptionsPanelTemplate.lua
 
-  Copyright 2015-2018 Mike Battersby
+  Copyright 2015-2020 Mike Battersby
 
   This is a half-baked reimplementation of what Blizzard have done in their
   OptionsPanelTemplates.lua, except I want the controls to update live and
@@ -16,7 +16,7 @@
 function LiteBagOptionsPanel_Open()
     local f = LiteBagOptions
     if not f.CurrentOptionsPanel then
-        f.CurrentOptionsPanel = LiteBagOptionsMounts
+        f.CurrentOptionsPanel = LiteBagOptions
     end
     InterfaceOptionsFrame:Show()
     InterfaceOptionsFrame_OpenToCategory(f.CurrentOptionsPanel)

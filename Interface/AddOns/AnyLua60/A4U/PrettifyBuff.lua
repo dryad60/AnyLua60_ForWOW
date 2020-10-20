@@ -12,17 +12,17 @@
 
   --generate a holder for the config data
   local cfg = CreateFrame("Frame")
-  
-  
+
+
   -----------------------------
   -- BUFF&DEBUFF CONFIG
   -----------------------------
 
   --adjust the oneletter abbrev?
   cfg.adjustOneletterAbbrev = true  --BUFF时间
-  
 
-  
+
+
   --combine buff and debuff frame - should buffs and debuffs be displayed in one single frame?
   --if you disable this it is intended that you unlock the buff and debuffs and move them apart!
   cfg.combineBuffsAndDebuffs = true
@@ -118,7 +118,7 @@
 
 
 
-  
+
 
   --get the addon namespace
   local addon, ns = ...
@@ -210,7 +210,7 @@
 
   local ceil, min, max = ceil, min, max
   local ShouldShowConsolidatedBuffFrame = ShouldShowConsolidatedBuffFrame
-  
+
   local buffFrameHeight = 0
 
   ---------------------------------------
@@ -279,7 +279,7 @@
 
     --shadow
     if cfg.background.show then
-      local back = CreateFrame("Frame", nil, b)
+      local back = CreateFrame("Frame", nil, b,"BackdropTemplate")
       back:SetPoint("TOPLEFT", b, "TOPLEFT", -cfg.background.padding, cfg.background.padding)
       back:SetPoint("BOTTOMRIGHT", b, "BOTTOMRIGHT", cfg.background.padding, -cfg.background.padding)
       back:SetFrameLevel(b:GetFrameLevel()-1)
@@ -313,7 +313,7 @@
       button:SetPoint("TOPRIGHT", _G[buttonName..(index-1)], "TOPLEFT", -cfg.debuffFrame.colSpacing, 0)
     end
   end
-  
+
   --update buff anchors
   local function updateAllBuffAnchors()
     --variables
@@ -323,7 +323,7 @@
     local offset      = numEnchants
     local realIndex, previousButton, aboveButton
 
-    
+
     --calculate the previous button in case tempenchant or consolidated buff are loaded
     if BuffFrame.numEnchants > 0 then
       previousButton = _G["TempEnchant"..numEnchants]
@@ -354,7 +354,7 @@
           button:SetPoint("TOPRIGHT", previousButton, "TOPLEFT", -cfg.buffFrame.colSpacing, 0)
         end
         previousButton = button
-        
+
       end
     end
     --calculate the height of the buff rows for the debuff frame calculation later
@@ -362,7 +362,7 @@
     local height = cfg.buffFrame.button.size*rows + cfg.buffFrame.rowSpacing*rows + cfg.buffFrame.gap*min(1,rows)
     buffFrameHeight = height
     --make sure the debuff frames update the position asap
-    if DebuffButton1 and cfg.combineBuffsAndDebuffs then    
+    if DebuffButton1 and cfg.combineBuffsAndDebuffs then
       updateDebuffAnchors("DebuffButton", 1)
     end
   end

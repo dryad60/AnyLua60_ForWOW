@@ -1,5 +1,5 @@
 
-Overachiever v1.0.9
+Overachiever v1.1.0
 ==============================
 
 Author: Tuhljin
@@ -110,6 +110,9 @@ Change log
 
 The change log lists changes of particular note to users, not every change made.
 
+v1.1.0
+- Updated for Shadowlands pre-patch (WoW patch 9.0.1). Updated TOC and made several required changes.
+
 v1.0.9
 - Updated TOC for WoW patch 8.3.
 - Fix missing tooltip textures for achievement reminders and missing checkmark texture for completed achievements in various places (recent reminders, series list, meta requirements).
@@ -123,6 +126,7 @@ v1.0.9
 -- Added "Scrappy's Best Friend" to Mechagon Island suggestions.
 -- Added suggestions for the Battle for Darkshore warfront.
 -- Added suggestions for the Battle for Stromgarde heroic warfront.
+-- Attempt to fix suggestions not showing for the Battle for Stromgarde warfront.
 -- Added suggestion for revamped Deepwind Gorge battleground.
 - Fix other variables leaking into global scope.
 
